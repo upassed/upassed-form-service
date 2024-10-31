@@ -1,0 +1,11 @@
+env: "testing"
+application_name: upassed-form-service
+grpc_server:
+    port: "44044"
+    timeout: 10m
+services:
+    authentication_service:
+        host: localhost
+        port: 44045
+timeouts:
+    endpoint_execution_timeout_ms: ${ENDPOINT_EXECUTION_TIMEOUT_MS}
