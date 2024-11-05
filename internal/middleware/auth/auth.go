@@ -5,12 +5,11 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
 	"github.com/upassed/upassed-authentication-service/pkg/client"
 	"github.com/upassed/upassed-form-service/internal/config"
+	"github.com/upassed/upassed-form-service/internal/logging"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log/slog"
 	"net"
-	"reflect"
-	"runtime"
 )
 
 var (
@@ -31,16 +30,15 @@ type ClientWrapper struct {
 }
 
 func NewClient(cfg *config.Config, log *slog.Logger) (*ClientWrapper, error) {
-	op := runtime.FuncForPC(reflect.ValueOf(NewClient).Pointer()).Name()
-
 	authenticationServiceUrl := net.JoinHostPort(
 		cfg.Services.Authentication.Host,
 		cfg.Services.Authentication.Port,
 	)
 
-	log = log.With(
-		slog.String("op", op),
-		slog.String("authentication-service-url", authenticationServiceUrl),
+	log = logging.Wrap(
+		log,
+		logging.WithOp(NewClient),
+		logging.WithAny("authentication-service-url", authenticationServiceUrl),
 	)
 
 	authenticationServiceConnection, err := grpc.NewClient(authenticationServiceUrl, grpc.WithTransportCredentials(insecure.NewCredentials()))

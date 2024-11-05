@@ -5,20 +5,17 @@ import (
 	"errors"
 	"github.com/upassed/upassed-authentication-service/pkg/client"
 	"github.com/upassed/upassed-form-service/internal/handling"
-	"github.com/upassed/upassed-form-service/internal/middleware"
+	"github.com/upassed/upassed-form-service/internal/logging"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"log/slog"
-	"reflect"
-	"runtime"
 )
 
 func (wrapper *ClientWrapper) teacherAccountTypeAuthenticationFunc(ctx context.Context) (context.Context, error) {
-	op := runtime.FuncForPC(reflect.ValueOf(wrapper.teacherAccountTypeAuthenticationFunc).Pointer()).Name()
-
-	log := wrapper.log.With(
-		slog.String("op", op),
-		slog.String(string(middleware.RequestIDKey), middleware.GetRequestIDFromContext(ctx)),
+	log := logging.Wrap(
+		wrapper.log,
+		logging.WithOp(wrapper.teacherAccountTypeAuthenticationFunc),
+		logging.WithCtx(ctx),
 	)
 
 	md, ok := metadata.FromIncomingContext(ctx)
