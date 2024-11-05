@@ -1,13 +1,13 @@
 package event
 
-type Form struct {
+type FormCreateRequest struct {
 	Name      string
-	Questions []Question
+	Questions []*Question
 }
 
 type Question struct {
-	Name    string
-	Answers []Answer
+	Text    string
+	Answers []*Answer
 }
 
 type Answer struct {
