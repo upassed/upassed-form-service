@@ -3,6 +3,9 @@ package app
 import (
 	"github.com/upassed/upassed-form-service/internal/config"
 	"github.com/upassed/upassed-form-service/internal/logging"
+	"github.com/upassed/upassed-form-service/internal/messanging"
+	form2 "github.com/upassed/upassed-form-service/internal/messanging/form"
+	"github.com/upassed/upassed-form-service/internal/repository"
 	"github.com/upassed/upassed-form-service/internal/server"
 	"github.com/upassed/upassed-form-service/internal/service/form"
 	"log/slog"
@@ -15,10 +18,23 @@ type App struct {
 func New(config *config.Config, log *slog.Logger) (*App, error) {
 	log = logging.Wrap(log, logging.WithOp(New))
 
+	_, err := repository.OpenGormDbConnection(config, log)
+	if err != nil {
+		return nil, err
+	}
+
+	rabbit, err := messanging.OpenRabbitConnection(config, log)
+	if err != nil {
+		return nil, err
+	}
+
+	formService := form.New(config, log)
+	form2.Initialize(formService, rabbit, config, log)
+
 	appServer, err := server.New(server.AppServerCreateParams{
 		Config:      config,
 		Log:         log,
-		FormService: form.New(config, log),
+		FormService: formService,
 	})
 
 	if err != nil {

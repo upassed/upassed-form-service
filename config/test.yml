@@ -3,9 +3,34 @@ application_name: upassed-form-service
 grpc_server:
     port: "44044"
     timeout: 10m
+storage:
+    host: localhost
+    port: 5432
+    database_name: upassed-form-service-db
+    user: user
+    password: password
+migrations:
+    migrations_path: ${MIGRATIONS_PATH}
+    migrations_table_name: ${MIGRATIONS_TABLE_NAME}
 services:
     authentication_service:
         host: localhost
         port: 44045
 timeouts:
     endpoint_execution_timeout_ms: ${ENDPOINT_EXECUTION_TIMEOUT_MS}
+tracing:
+    host: localhost
+    port: 14268
+    form_tracer_name: form-tracer
+rabbit:
+    user: upassed-rabbit-user
+    password: upassed-rabbit-password
+    host: localhost
+    port: 5672
+    exchange:
+        name: upassed-form-service
+        type: direct
+    queues:
+        form_create:
+            name: form-create-queue
+            routing_key: form.create
