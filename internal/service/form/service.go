@@ -1,11 +1,14 @@
 package form
 
 import (
+	"context"
 	"github.com/upassed/upassed-form-service/internal/config"
+	business "github.com/upassed/upassed-form-service/internal/service/model"
 	"log/slog"
 )
 
 type Service interface {
+	Create(ctx context.Context, form *business.Form) (*business.FormCreateResponse, error)
 }
 
 type formServiceImpl struct {
