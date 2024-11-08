@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/upassed/upassed-form-service/internal/logging"
-	"github.com/upassed/upassed-form-service/internal/middleware/requestid"
+	"github.com/upassed/upassed-form-service/internal/middleware/grpc/request_id"
 	"log/slog"
 	"time"
 

@@ -4,7 +4,8 @@ import (
 	"github.com/upassed/upassed-form-service/internal/config"
 	"github.com/upassed/upassed-form-service/internal/logging"
 	"github.com/upassed/upassed-form-service/internal/messanging"
-	form2 "github.com/upassed/upassed-form-service/internal/messanging/form"
+	formRabbit "github.com/upassed/upassed-form-service/internal/messanging/form"
+	"github.com/upassed/upassed-form-service/internal/middleware/auth"
 	"github.com/upassed/upassed-form-service/internal/repository"
 	"github.com/upassed/upassed-form-service/internal/server"
 	"github.com/upassed/upassed-form-service/internal/service/form"
@@ -29,7 +30,12 @@ func New(config *config.Config, log *slog.Logger) (*App, error) {
 	}
 
 	formService := form.New(config, log)
-	form2.Initialize(formService, rabbit, config, log)
+	authClient, err := auth.NewClient(config, log)
+	if err != nil {
+		return nil, err
+	}
+
+	formRabbit.Initialize(authClient, formService, rabbit, config, log)
 
 	appServer, err := server.New(server.AppServerCreateParams{
 		Config:      config,
