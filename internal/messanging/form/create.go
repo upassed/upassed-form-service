@@ -6,7 +6,8 @@ import (
 	"github.com/upassed/upassed-form-service/internal/middleware/amqp"
 	loggingMiddleware "github.com/upassed/upassed-form-service/internal/middleware/amqp/logging"
 	"github.com/upassed/upassed-form-service/internal/middleware/amqp/recovery"
-	requestid "github.com/upassed/upassed-form-service/internal/middleware/amqp/request_id"
+	requestidMiddleware "github.com/upassed/upassed-form-service/internal/middleware/amqp/request_id"
+	"github.com/upassed/upassed-form-service/internal/middleware/common/request_id"
 	"github.com/upassed/upassed-form-service/internal/tracing"
 	"github.com/wagslane/go-rabbitmq"
 	"go.opentelemetry.io/otel"
@@ -55,12 +56,15 @@ func (client *rabbitClient) CreateQueueConsumer() rabbitmq.Handler {
 	}
 
 	handlerWithMiddleware := amqp.ChainMiddleware(
-		context.Background(),
 		baseHandler,
-		requestid.Middleware(),
+		requestidMiddleware.Middleware(),
 		recovery.Middleware(client.log),
 		loggingMiddleware.Middleware(client.log),
+		client.authClient.AmqpMiddleware(client.log),
 	)
 
-	return handlerWithMiddleware
+	return func(d rabbitmq.Delivery) (action rabbitmq.Action) {
+		ctx := context.Background()
+		return handlerWithMiddleware(ctx, d)
+	}
 }

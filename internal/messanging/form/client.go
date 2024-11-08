@@ -3,7 +3,7 @@ package form
 import (
 	"github.com/upassed/upassed-form-service/internal/config"
 	"github.com/upassed/upassed-form-service/internal/logging"
-	"github.com/upassed/upassed-form-service/internal/middleware/auth"
+	"github.com/upassed/upassed-form-service/internal/middleware/common/auth"
 	"github.com/upassed/upassed-form-service/internal/service/form"
 	"github.com/wagslane/go-rabbitmq"
 	"log/slog"

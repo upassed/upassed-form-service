@@ -5,7 +5,7 @@ import (
 	"github.com/upassed/upassed-form-service/internal/logging"
 	"github.com/upassed/upassed-form-service/internal/messanging"
 	formRabbit "github.com/upassed/upassed-form-service/internal/messanging/form"
-	"github.com/upassed/upassed-form-service/internal/middleware/auth"
+	"github.com/upassed/upassed-form-service/internal/middleware/common/auth"
 	"github.com/upassed/upassed-form-service/internal/repository"
 	"github.com/upassed/upassed-form-service/internal/server"
 	"github.com/upassed/upassed-form-service/internal/service/form"

@@ -1,8 +1,8 @@
 package auth
 
 import (
+	"context"
 	"errors"
-	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
 	"github.com/upassed/upassed-authentication-service/pkg/client"
 	"github.com/upassed/upassed-form-service/internal/config"
 	"github.com/upassed/upassed-form-service/internal/logging"
@@ -21,7 +21,7 @@ const (
 	usernameKey             = "username"
 )
 
-var authenticationRules = map[string]auth.AuthFunc{}
+type tokenAuthFunc func(ctx context.Context, token string) (context.Context, error)
 
 type ClientWrapper struct {
 	cfg                         *config.Config

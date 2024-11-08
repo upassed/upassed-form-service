@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/upassed/upassed-form-service/internal/config"
 	"github.com/upassed/upassed-form-service/internal/logging"
-	"github.com/upassed/upassed-form-service/internal/middleware/auth"
+	"github.com/upassed/upassed-form-service/internal/middleware/common/auth"
 	loggingMiddleware "github.com/upassed/upassed-form-service/internal/middleware/grpc/logging"
 	"github.com/upassed/upassed-form-service/internal/middleware/grpc/recovery"
 	"github.com/upassed/upassed-form-service/internal/middleware/grpc/request_id"

@@ -5,7 +5,7 @@ import (
 	"github.com/upassed/upassed-form-service/internal/logging"
 	"github.com/upassed/upassed-form-service/internal/messanging"
 	"github.com/upassed/upassed-form-service/internal/middleware/amqp"
-	requestid "github.com/upassed/upassed-form-service/internal/middleware/amqp/request_id"
+	"github.com/upassed/upassed-form-service/internal/middleware/common/request_id"
 	"github.com/wagslane/go-rabbitmq"
 	"log/slog"
 )

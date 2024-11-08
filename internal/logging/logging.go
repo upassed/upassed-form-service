@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/upassed/upassed-form-service/internal/config"
-	"github.com/upassed/upassed-form-service/internal/middleware/grpc/request_id"
+	"github.com/upassed/upassed-form-service/internal/middleware/common/request_id"
 	"io"
 	"log/slog"
 	"os"
