@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/upassed/upassed-form-service/internal/config"
-	"github.com/upassed/upassed-form-service/internal/middleware/requestid"
+	"github.com/upassed/upassed-form-service/internal/middleware/common/request_id"
 	"io"
 	"log/slog"
 	"os"
@@ -18,6 +18,10 @@ import (
 
 const (
 	timeFormat = "[Mon Jan 2 2006 15:04:05]"
+)
+
+const (
+	usernameKey = "username"
 )
 
 const (
@@ -76,7 +80,15 @@ func Wrap(log *slog.Logger, options ...Option) *slog.Logger {
 	}
 
 	if opts.ctx != nil {
-		log = log.With(slog.String(string(requestid.ContextKey), requestid.GetRequestIDFromContext(opts.ctx)))
+		username, ok := opts.ctx.Value(usernameKey).(string)
+		if !ok {
+			username = ""
+		}
+
+		log = log.With(
+			slog.String(string(requestid.ContextKey), requestid.GetRequestIDFromContext(opts.ctx)),
+			slog.String(usernameKey, username),
+		)
 	}
 
 	if len(opts.attributes) != 0 {

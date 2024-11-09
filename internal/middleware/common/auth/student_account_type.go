@@ -7,35 +7,22 @@ import (
 	"github.com/upassed/upassed-form-service/internal/handling"
 	"github.com/upassed/upassed-form-service/internal/logging"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/metadata"
 	"log/slog"
 )
 
-func (wrapper *ClientWrapper) studentAccountTypeAuthenticationFunc(ctx context.Context) (context.Context, error) {
+func (wrapper *ClientWrapper) StudentAccountTypeAuthenticationFunc(ctx context.Context, token string) (context.Context, error) {
 	log := logging.Wrap(
 		wrapper.log,
-		logging.WithOp(wrapper.studentAccountTypeAuthenticationFunc),
+		logging.WithOp(wrapper.StudentAccountTypeAuthenticationFunc),
 		logging.WithCtx(ctx),
 	)
-
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
-		log.Error("unable to extract metadata from incoming context")
-		return nil, handling.Wrap(errors.New("unable to extract metadata"), handling.WithCode(codes.Internal))
-	}
-
-	token, ok := md[authenticationHeaderKey]
-	if !ok || len(token) != 1 {
-		log.Error("missing authentication header in request metadata")
-		return nil, handling.Wrap(errors.New("unable to extract authentication header with jwt token"), handling.WithCode(codes.Unauthenticated))
-	}
 
 	timeout := wrapper.cfg.GetEndpointExecutionTimeout()
 	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
 	response, err := wrapper.authenticationServiceClient.Validate(ctx, &client.TokenValidateRequest{
-		AccessToken: token[0],
+		AccessToken: token,
 	})
 
 	if err != nil {

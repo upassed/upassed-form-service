@@ -3,7 +3,7 @@ package recovery
 import (
 	"context"
 	"github.com/upassed/upassed-form-service/internal/logging"
-	"github.com/upassed/upassed-form-service/internal/middleware/requestid"
+	"github.com/upassed/upassed-form-service/internal/middleware/common/request_id"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

@@ -2,9 +2,12 @@ package form
 
 import (
 	"context"
-	"github.com/google/uuid"
 	"github.com/upassed/upassed-form-service/internal/logging"
-	"github.com/upassed/upassed-form-service/internal/middleware/requestid"
+	"github.com/upassed/upassed-form-service/internal/middleware/amqp"
+	loggingMiddleware "github.com/upassed/upassed-form-service/internal/middleware/amqp/logging"
+	"github.com/upassed/upassed-form-service/internal/middleware/amqp/recovery"
+	requestidMiddleware "github.com/upassed/upassed-form-service/internal/middleware/amqp/request_id"
+	"github.com/upassed/upassed-form-service/internal/middleware/common/request_id"
 	"github.com/upassed/upassed-form-service/internal/tracing"
 	"github.com/wagslane/go-rabbitmq"
 	"go.opentelemetry.io/otel"
@@ -12,11 +15,8 @@ import (
 	"log/slog"
 )
 
-func (client *rabbitClient) CreateQueueConsumer() func(d rabbitmq.Delivery) rabbitmq.Action {
-	return func(delivery rabbitmq.Delivery) rabbitmq.Action {
-		requestID := uuid.New().String()
-		ctx := context.WithValue(context.Background(), requestid.ContextKey, requestID)
-
+func (client *rabbitClient) CreateQueueConsumer() rabbitmq.Handler {
+	baseHandler := func(ctx context.Context, delivery rabbitmq.Delivery) rabbitmq.Action {
 		log := logging.Wrap(client.log,
 			logging.WithOp(client.CreateQueueConsumer),
 			logging.WithCtx(ctx),
@@ -53,5 +53,18 @@ func (client *rabbitClient) CreateQueueConsumer() func(d rabbitmq.Delivery) rabb
 
 		log.Info("successfully created form", slog.Any("createdFormID", response.CreatedFormID))
 		return rabbitmq.Ack
+	}
+
+	handlerWithMiddleware := amqp.ChainMiddleware(
+		baseHandler,
+		requestidMiddleware.Middleware(),
+		recovery.Middleware(client.log),
+		loggingMiddleware.Middleware(client.log),
+		client.authClient.AmqpMiddleware(client.log),
+	)
+
+	return func(d rabbitmq.Delivery) (action rabbitmq.Action) {
+		ctx := context.Background()
+		return handlerWithMiddleware(ctx, d)
 	}
 }

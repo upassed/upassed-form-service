@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"github.com/upassed/upassed-form-service/internal/config"
 	"github.com/upassed/upassed-form-service/internal/logging"
-	"github.com/upassed/upassed-form-service/internal/middleware/auth"
-	logging2 "github.com/upassed/upassed-form-service/internal/middleware/logging"
-	"github.com/upassed/upassed-form-service/internal/middleware/recovery"
-	"github.com/upassed/upassed-form-service/internal/middleware/requestid"
+	"github.com/upassed/upassed-form-service/internal/middleware/common/auth"
+	loggingMiddleware "github.com/upassed/upassed-form-service/internal/middleware/grpc/logging"
+	"github.com/upassed/upassed-form-service/internal/middleware/grpc/recovery"
+	"github.com/upassed/upassed-form-service/internal/middleware/grpc/request_id"
 	formSvc "github.com/upassed/upassed-form-service/internal/service/form"
 	"google.golang.org/grpc"
 	"log/slog"
@@ -42,7 +42,7 @@ func New(params AppServerCreateParams) (*AppServer, error) {
 		grpc.ChainUnaryInterceptor(
 			requestid.MiddlewareInterceptor(),
 			recovery.MiddlewareInterceptor(params.Log),
-			logging2.MiddlewareInterceptor(params.Log),
+			loggingMiddleware.MiddlewareInterceptor(params.Log),
 			authenticationClient.AuthenticationUnaryServerInterceptor(),
 		),
 	)
