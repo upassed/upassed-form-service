@@ -10,14 +10,14 @@ storage:
     user: user
     password: password
 migrations:
-    migrations_path: ${MIGRATIONS_PATH}
-    migrations_table_name: ${MIGRATIONS_TABLE_NAME}
+    migrations_path: ./migration/scripts
+    migrations_table_name: migrations
 services:
     authentication_service:
         host: localhost
         port: 44045
 timeouts:
-    endpoint_execution_timeout_ms: ${ENDPOINT_EXECUTION_TIMEOUT_MS}
+    endpoint_execution_timeout_ms: 60000
 tracing:
     host: localhost
     port: 14268

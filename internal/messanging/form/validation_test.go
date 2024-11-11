@@ -79,3 +79,20 @@ func TestFormCreateRequestValidation_AnswerTextTooLong(t *testing.T) {
 	err := request.Validate()
 	require.Error(t, err)
 }
+
+func TestFormCreateRequestValidation_NoCorrectAnswerOnTheQuestion(t *testing.T) {
+	request := util.RandomEventFormCreateRequest()
+	for _, answer := range request.Questions[0].Answers {
+		answer.IsCorrect = false
+	}
+
+	err := request.Validate()
+	require.Error(t, err)
+}
+
+func TestFormCreateRequestValidation_HappyPath(t *testing.T) {
+	request := util.RandomEventFormCreateRequest()
+
+	err := request.Validate()
+	require.NoError(t, err)
+}

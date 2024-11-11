@@ -7,6 +7,7 @@ import (
 	formRabbit "github.com/upassed/upassed-form-service/internal/messanging/form"
 	"github.com/upassed/upassed-form-service/internal/middleware/common/auth"
 	"github.com/upassed/upassed-form-service/internal/repository"
+	formRepo "github.com/upassed/upassed-form-service/internal/repository/form"
 	"github.com/upassed/upassed-form-service/internal/server"
 	"github.com/upassed/upassed-form-service/internal/service/form"
 	"log/slog"
@@ -19,7 +20,7 @@ type App struct {
 func New(config *config.Config, log *slog.Logger) (*App, error) {
 	log = logging.Wrap(log, logging.WithOp(New))
 
-	_, err := repository.OpenGormDbConnection(config, log)
+	db, err := repository.OpenGormDbConnection(config, log)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +30,9 @@ func New(config *config.Config, log *slog.Logger) (*App, error) {
 		return nil, err
 	}
 
-	formService := form.New(config, log)
+	formRepository := formRepo.New(db, config, log)
+
+	formService := form.New(config, log, formRepository)
 	authClient, err := auth.NewClient(config, log)
 	if err != nil {
 		return nil, err

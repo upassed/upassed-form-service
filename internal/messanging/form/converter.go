@@ -16,7 +16,7 @@ func ConvertToFormCreateRequest(messageBody []byte) (*event.FormCreateRequest, e
 	return &request, nil
 }
 
-func ConvertToForm(request *event.FormCreateRequest) *business.Form {
+func ConvertToBusinessForm(request *event.FormCreateRequest) *business.Form {
 	questions := make([]*business.Question, 0, len(request.Questions))
 	for _, question := range request.Questions {
 		questions = append(questions, convertToQuestion(question))

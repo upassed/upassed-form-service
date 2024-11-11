@@ -3,6 +3,7 @@ package form
 import (
 	"context"
 	"github.com/upassed/upassed-form-service/internal/config"
+	domain "github.com/upassed/upassed-form-service/internal/repository/model"
 	business "github.com/upassed/upassed-form-service/internal/service/model"
 	"log/slog"
 )
@@ -12,13 +13,20 @@ type Service interface {
 }
 
 type formServiceImpl struct {
-	cfg *config.Config
-	log *slog.Logger
+	cfg            *config.Config
+	log            *slog.Logger
+	formRepository formRepository
 }
 
-func New(cfg *config.Config, log *slog.Logger) Service {
+type formRepository interface {
+	ExistsByNameAndTeacherUsername(ctx context.Context, formName, teacherUsername string) (bool, error)
+	Save(ctx context.Context, form *domain.Form) error
+}
+
+func New(cfg *config.Config, log *slog.Logger, formRepository formRepository) Service {
 	return &formServiceImpl{
-		cfg: cfg,
-		log: log,
+		cfg:            cfg,
+		log:            log,
+		formRepository: formRepository,
 	}
 }

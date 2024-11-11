@@ -18,7 +18,7 @@ var (
 
 const (
 	authenticationHeaderKey = "authentication"
-	usernameKey             = "username"
+	UsernameKey             = "username"
 )
 
 type tokenAuthFunc func(ctx context.Context, token string) (context.Context, error)

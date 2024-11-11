@@ -8,6 +8,7 @@ import (
 var (
 	errQuestionsSliceIsEmpty       = errors.New("number of questions should be > 0")
 	errInsufficientNumberOfAnswers = errors.New("number of answers should be > 1")
+	errNoOneAnswerIsCorrect        = errors.New("no one answer is correct")
 )
 
 type FormCreateRequest struct {
@@ -38,6 +39,17 @@ func (request *FormCreateRequest) Validate() error {
 	for _, question := range request.Questions {
 		if len(question.Answers) <= 1 {
 			return errInsufficientNumberOfAnswers
+		}
+
+		correctAnswersCount := 0
+		for _, answer := range question.Answers {
+			if answer.IsCorrect {
+				correctAnswersCount++
+			}
+		}
+
+		if correctAnswersCount == 0 {
+			return errNoOneAnswerIsCorrect
 		}
 	}
 

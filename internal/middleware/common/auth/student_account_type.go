@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"errors"
+	"github.com/google/uuid"
 	"github.com/upassed/upassed-authentication-service/pkg/client"
 	"github.com/upassed/upassed-form-service/internal/handling"
 	"github.com/upassed/upassed-form-service/internal/logging"
@@ -30,7 +31,7 @@ func (wrapper *ClientWrapper) StudentAccountTypeAuthenticationFunc(ctx context.C
 		return nil, handling.Wrap(errors.New("validate token error"), handling.WithCode(codes.Unauthenticated))
 	}
 
-	enrichedContext := context.WithValue(ctx, usernameKey, response.GetUsername())
+	enrichedContext := context.WithValue(ctx, UsernameKey, uuid.MustParse(response.GetUsername()))
 	if !(response.GetAccountType() == "STUDENT") {
 		log.Error("account type is not equal to student", slog.String("accountType", response.GetAccountType()))
 		return nil, handling.Wrap(errors.New("required student account type"), handling.WithCode(codes.PermissionDenied))
