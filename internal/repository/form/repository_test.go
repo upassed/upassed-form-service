@@ -2,6 +2,7 @@ package form_test
 
 import (
 	"context"
+	"github.com/brianvoe/gofakeit/v7"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/upassed/upassed-form-service/internal/config"
@@ -97,4 +98,30 @@ func TestSave_HappyPath(t *testing.T) {
 	ctx := context.WithValue(context.Background(), auth.UsernameKey, formToSave.TeacherUsername)
 	err := studentRepository.Save(ctx, formToSave)
 	require.NoError(t, err)
+}
+
+func TestExists_DuplicatesFound(t *testing.T) {
+	formToSave := util.RandomDomainForm()
+
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, formToSave.TeacherUsername)
+	err := studentRepository.Save(ctx, formToSave)
+	require.NoError(t, err)
+
+	result, err := studentRepository.ExistsByNameAndTeacherUsername(ctx, formToSave.Name, formToSave.TeacherUsername)
+	require.NoError(t, err)
+
+	assert.True(t, result)
+}
+
+func TestExists_DuplicatesNotFound(t *testing.T) {
+	formToSave := util.RandomDomainForm()
+
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, formToSave.TeacherUsername)
+	err := studentRepository.Save(ctx, formToSave)
+	require.NoError(t, err)
+
+	result, err := studentRepository.ExistsByNameAndTeacherUsername(ctx, formToSave.Name, gofakeit.Username())
+	require.NoError(t, err)
+
+	assert.False(t, result)
 }
