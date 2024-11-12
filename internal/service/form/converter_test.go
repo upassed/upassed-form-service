@@ -18,6 +18,7 @@ func TestConvertToDomainForm(t *testing.T) {
 	assert.Equal(t, len(businessForm.Questions), len(domainForm.Questions))
 	for idx, question := range businessForm.Questions {
 		assert.NotNil(t, question.ID)
+		assert.Equal(t, businessForm.ID, domainForm.Questions[idx].FormID)
 		assertQuestionsEqual(t, businessForm.Questions[idx], domainForm.Questions[idx])
 	}
 }
@@ -28,6 +29,7 @@ func assertQuestionsEqual(t *testing.T, businessQuestion *business.Question, dom
 	assert.Equal(t, len(businessQuestion.Answers), len(domainQuestion.Answers))
 	for idx, answer := range businessQuestion.Answers {
 		assert.NotNil(t, answer.ID)
+		assert.Equal(t, businessQuestion.ID, domainQuestion.Answers[idx].QuestionID)
 		assertAnswersEqual(t, businessQuestion.Answers[idx], domainQuestion.Answers[idx])
 	}
 }

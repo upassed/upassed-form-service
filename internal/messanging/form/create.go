@@ -7,6 +7,7 @@ import (
 	loggingMiddleware "github.com/upassed/upassed-form-service/internal/middleware/amqp/logging"
 	"github.com/upassed/upassed-form-service/internal/middleware/amqp/recovery"
 	requestidMiddleware "github.com/upassed/upassed-form-service/internal/middleware/amqp/request_id"
+	"github.com/upassed/upassed-form-service/internal/middleware/common/auth"
 	"github.com/upassed/upassed-form-service/internal/middleware/common/request_id"
 	"github.com/upassed/upassed-form-service/internal/tracing"
 	"github.com/wagslane/go-rabbitmq"
@@ -35,7 +36,12 @@ func (client *rabbitClient) CreateQueueConsumer() rabbitmq.Handler {
 			return rabbitmq.NackDiscard
 		}
 
-		span.SetAttributes(attribute.String("formName", request.Name))
+		teacherUsername := ctx.Value(auth.UsernameKey).(string)
+		span.SetAttributes(
+			attribute.String("formName", request.Name),
+			attribute.String(auth.UsernameKey, teacherUsername),
+		)
+
 		log.Info("validating form create request")
 		if err := request.Validate(); err != nil {
 			log.Error("form create request is invalid", logging.Error(err))
@@ -58,9 +64,9 @@ func (client *rabbitClient) CreateQueueConsumer() rabbitmq.Handler {
 	handlerWithMiddleware := amqp.ChainMiddleware(
 		baseHandler,
 		requestidMiddleware.Middleware(),
-		recovery.Middleware(client.log),
 		loggingMiddleware.Middleware(client.log),
 		client.authClient.AmqpMiddleware(client.log),
+		recovery.Middleware(client.log),
 	)
 
 	return func(d rabbitmq.Delivery) (action rabbitmq.Action) {

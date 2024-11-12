@@ -20,8 +20,13 @@ var (
 )
 
 func (service *formServiceImpl) Create(ctx context.Context, form *business.Form) (*business.FormCreateResponse, error) {
+	teacherUsername := ctx.Value(auth.UsernameKey).(string)
+
 	spanContext, span := otel.Tracer(service.cfg.Tracing.FormTracerName).Start(ctx, "formService#Create")
-	span.SetAttributes(attribute.String("formName", form.Name))
+	span.SetAttributes(
+		attribute.String("formName", form.Name),
+		attribute.String(auth.UsernameKey, teacherUsername),
+	)
 	defer span.End()
 
 	log := logging.Wrap(service.log,
@@ -32,7 +37,6 @@ func (service *formServiceImpl) Create(ctx context.Context, form *business.Form)
 
 	log.Info("started creating form")
 	timeout := service.cfg.GetEndpointExecutionTimeout()
-	teacherUsername := ctx.Value(auth.UsernameKey).(string)
 
 	formCreateResponse, err := async.ExecuteWithTimeout(spanContext, timeout, func(ctx context.Context) (*business.FormCreateResponse, error) {
 		log.Info("checking form duplicates")

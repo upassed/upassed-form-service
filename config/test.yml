@@ -10,7 +10,7 @@ storage:
     user: user
     password: password
 migrations:
-    migrations_path: ./migration/scripts
+    migrations_path: "../../../migration/scripts"
     migrations_table_name: migrations
 services:
     authentication_service:

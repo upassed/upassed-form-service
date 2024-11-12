@@ -1,11 +1,14 @@
 package domain
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+)
 
 type Form struct {
-	ID        uuid.UUID
-	Name      string
-	Questions []*Question
+	ID              uuid.UUID
+	Name            string
+	TeacherUsername string
+	Questions       []*Question `gorm:"foreignKey:FormID;references:ID"`
 }
 
 func (Form) TableName() string {
@@ -14,8 +17,9 @@ func (Form) TableName() string {
 
 type Question struct {
 	ID      uuid.UUID
+	FormID  uuid.UUID
 	Text    string
-	Answers []*Answer
+	Answers []*Answer `gorm:"foreignKey:QuestionID;references:ID"`
 }
 
 func (Question) TableName() string {
@@ -23,9 +27,10 @@ func (Question) TableName() string {
 }
 
 type Answer struct {
-	ID        uuid.UUID
-	Text      string
-	IsCorrect bool
+	ID         uuid.UUID
+	QuestionID uuid.UUID
+	Text       string
+	IsCorrect  bool
 }
 
 func (Answer) TableName() string {

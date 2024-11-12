@@ -23,7 +23,7 @@ type Question struct {
 
 type Answer struct {
 	Text      string `json:"text,omitempty" validate:"required,min=2,max=120"`
-	IsCorrect bool   `json:"is_correct,omitempty" validate:"required,boolean"`
+	IsCorrect bool   `json:"is_correct,omitempty" validate:"boolean"`
 }
 
 func (request *FormCreateRequest) Validate() error {
