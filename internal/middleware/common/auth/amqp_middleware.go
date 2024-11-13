@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"github.com/upassed/upassed-form-service/internal/config"
 	"github.com/upassed/upassed-form-service/internal/logging"
 	"github.com/upassed/upassed-form-service/internal/messanging"
 	"github.com/upassed/upassed-form-service/internal/middleware/amqp"
@@ -11,7 +12,9 @@ import (
 
 var amqpAuthenticationRules = map[string]tokenAuthFunc{}
 
-func (wrapper *ClientWrapper) AmqpMiddleware(log *slog.Logger) amqp.Middleware {
+func (wrapper *ClientWrapper) AmqpMiddleware(config *config.Config, log *slog.Logger) amqp.Middleware {
+	amqpAuthenticationRules[config.Rabbit.Queues.FormCreate.Name] = wrapper.TeacherAccountTypeAuthenticationFunc
+
 	return func(ctx context.Context, next messanging.HandlerWithContext) messanging.HandlerWithContext {
 		return func(ctx context.Context, d rabbitmq.Delivery) (action rabbitmq.Action) {
 			log = logging.Wrap(

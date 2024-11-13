@@ -65,7 +65,7 @@ func (client *rabbitClient) CreateQueueConsumer() rabbitmq.Handler {
 		baseHandler,
 		requestidMiddleware.Middleware(),
 		loggingMiddleware.Middleware(client.log),
-		client.authClient.AmqpMiddleware(client.log),
+		client.authClient.AmqpMiddleware(client.cfg, client.log),
 		recovery.Middleware(client.log),
 	)
 
