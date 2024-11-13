@@ -9,6 +9,7 @@ import (
 	business "github.com/upassed/upassed-form-service/internal/service/model"
 	"github.com/upassed/upassed-form-service/internal/util"
 	"testing"
+	"time"
 )
 
 func TestConvertToFormCreateRequest_InvalidBytes(t *testing.T) {
@@ -25,7 +26,11 @@ func TestConvertToFormCreateRequest_ValidBytes(t *testing.T) {
 	convertedRequest, err := form.ConvertToFormCreateRequest(initialRequestBytes)
 	require.NoError(t, err)
 
-	assert.Equal(t, *initialRequest, *convertedRequest)
+	assert.Equal(t, initialRequest.Name, convertedRequest.Name)
+	assert.Equal(t, initialRequest.Description, convertedRequest.Description)
+	assert.WithinDuration(t, initialRequest.TestingBeginDate, convertedRequest.TestingBeginDate, 1*time.Millisecond)
+	assert.WithinDuration(t, initialRequest.TestingEndDate, convertedRequest.TestingEndDate, 1*time.Millisecond)
+	assert.Equal(t, initialRequest.Questions, convertedRequest.Questions)
 }
 
 func TestConvertToBusinessForm(t *testing.T) {

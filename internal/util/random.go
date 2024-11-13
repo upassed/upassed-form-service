@@ -6,6 +6,7 @@ import (
 	event "github.com/upassed/upassed-form-service/internal/messanging/model"
 	domain "github.com/upassed/upassed-form-service/internal/repository/model"
 	business "github.com/upassed/upassed-form-service/internal/service/model"
+	"time"
 )
 
 func RandomEventFormCreateRequest() *event.FormCreateRequest {
@@ -15,9 +16,13 @@ func RandomEventFormCreateRequest() *event.FormCreateRequest {
 		questions = append(questions, randomEventQuestion())
 	}
 
+	testingBeginDate := gofakeit.FutureDate()
 	return &event.FormCreateRequest{
-		Name:      gofakeit.Slogan(),
-		Questions: questions,
+		Name:             gofakeit.Slogan(),
+		Questions:        questions,
+		Description:      gofakeit.Slogan(),
+		TestingBeginDate: testingBeginDate,
+		TestingEndDate:   testingBeginDate.Add(10 * time.Hour),
 	}
 }
 
@@ -48,10 +53,14 @@ func RandomBusinessForm() *business.Form {
 		questions = append(questions, randomBusinessQuestion())
 	}
 
+	testingBeginDate := gofakeit.FutureDate()
 	return &business.Form{
-		ID:        uuid.New(),
-		Name:      gofakeit.Slogan(),
-		Questions: questions,
+		ID:               uuid.New(),
+		Name:             gofakeit.Slogan(),
+		Questions:        questions,
+		Description:      gofakeit.Slogan(),
+		TestingBeginDate: testingBeginDate,
+		TestingEndDate:   testingBeginDate.Add(10 * time.Hour),
 	}
 }
 
@@ -86,11 +95,15 @@ func RandomDomainForm() *domain.Form {
 		questions = append(questions, randomDomainQuestion(domainFormID))
 	}
 
+	testingBeginDate := gofakeit.FutureDate()
 	return &domain.Form{
-		ID:              domainFormID,
-		Name:            gofakeit.Slogan(),
-		TeacherUsername: gofakeit.Username(),
-		Questions:       questions,
+		ID:               domainFormID,
+		Name:             gofakeit.Slogan(),
+		TeacherUsername:  gofakeit.Username(),
+		Questions:        questions,
+		Description:      gofakeit.Slogan(),
+		TestingBeginDate: testingBeginDate,
+		TestingEndDate:   testingBeginDate.Add(10 * time.Hour),
 	}
 }
 

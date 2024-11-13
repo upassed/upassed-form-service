@@ -8,9 +8,13 @@ import (
 
 func ConvertToDomainForm(form *business.Form) *domain.Form {
 	return &domain.Form{
-		ID:        form.ID,
-		Name:      form.Name,
-		Questions: convertToDomainQuestions(form.Questions, form.ID),
+		ID:               form.ID,
+		Name:             form.Name,
+		Questions:        convertToDomainQuestions(form.Questions, form.ID),
+		Description:      form.Description,
+		TestingBeginDate: form.TestingBeginDate,
+		TestingEndDate:   form.TestingEndDate,
+		CreatedAt:        form.CreatedAt,
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	event "github.com/upassed/upassed-form-service/internal/messanging/model"
 	business "github.com/upassed/upassed-form-service/internal/service/model"
+	"time"
 )
 
 func ConvertToFormCreateRequest(messageBody []byte) (*event.FormCreateRequest, error) {
@@ -23,9 +24,13 @@ func ConvertToBusinessForm(request *event.FormCreateRequest) *business.Form {
 	}
 
 	return &business.Form{
-		ID:        uuid.New(),
-		Name:      request.Name,
-		Questions: questions,
+		ID:               uuid.New(),
+		Name:             request.Name,
+		Questions:        questions,
+		Description:      request.Description,
+		TestingBeginDate: request.TestingBeginDate,
+		TestingEndDate:   request.TestingEndDate,
+		CreatedAt:        time.Now(),
 	}
 }
 

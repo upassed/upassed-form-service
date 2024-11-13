@@ -3,17 +3,22 @@ package event
 import (
 	"errors"
 	"github.com/go-playground/validator/v10"
+	"time"
 )
 
 var (
 	errQuestionsSliceIsEmpty       = errors.New("number of questions should be > 0")
 	errInsufficientNumberOfAnswers = errors.New("number of answers should be > 1")
 	errNoOneAnswerIsCorrect        = errors.New("no one answer is correct")
+	errInvalidTestingDateRange     = errors.New("testing date range is invalid: begin date should be before end date")
 )
 
 type FormCreateRequest struct {
-	Name      string      `json:"name,omitempty" validate:"required,min=4,max=120"`
-	Questions []*Question `json:"questions,omitempty" validate:"required,dive"`
+	Name             string      `json:"name,omitempty" validate:"required,min=4,max=120"`
+	Questions        []*Question `json:"questions,omitempty" validate:"required,dive"`
+	Description      string      `json:"description,omitempty" validate:"max=500"`
+	TestingBeginDate time.Time   `json:"testing_begin_date,omitempty" validate:"required"`
+	TestingEndDate   time.Time   `json:"testing_end_date,omitempty" validate:"required"`
 }
 
 type Question struct {
@@ -30,6 +35,10 @@ func (request *FormCreateRequest) Validate() error {
 	validate := validator.New()
 	if err := validate.Struct(*request); err != nil {
 		return err
+	}
+
+	if request.TestingBeginDate.After(request.TestingEndDate) {
+		return errInvalidTestingDateRange
 	}
 
 	if len(request.Questions) == 0 {

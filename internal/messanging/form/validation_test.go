@@ -6,6 +6,7 @@ import (
 	event "github.com/upassed/upassed-form-service/internal/messanging/model"
 	"github.com/upassed/upassed-form-service/internal/util"
 	"testing"
+	"time"
 )
 
 func TestFormCreateRequestValidation_EmptyName(t *testing.T) {
@@ -85,6 +86,14 @@ func TestFormCreateRequestValidation_NoCorrectAnswerOnTheQuestion(t *testing.T) 
 	for _, answer := range request.Questions[0].Answers {
 		answer.IsCorrect = false
 	}
+
+	err := request.Validate()
+	require.Error(t, err)
+}
+
+func TestFormCreateRequestValidation_InvalidTestingDateRange(t *testing.T) {
+	request := util.RandomEventFormCreateRequest()
+	request.TestingBeginDate = request.TestingEndDate.Add(1 * time.Hour)
 
 	err := request.Validate()
 	require.Error(t, err)
