@@ -9,6 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	uuid "github.com/google/uuid"
 	domain "github.com/upassed/upassed-form-service/internal/repository/model"
 )
 
@@ -48,6 +49,21 @@ func (m *FormRepository) ExistsByNameAndTeacherUsername(ctx context.Context, for
 func (mr *FormRepositoryMockRecorder) ExistsByNameAndTeacherUsername(ctx, formName, teacherUsername interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExistsByNameAndTeacherUsername", reflect.TypeOf((*FormRepository)(nil).ExistsByNameAndTeacherUsername), ctx, formName, teacherUsername)
+}
+
+// FindByID mocks base method.
+func (m *FormRepository) FindByID(ctx context.Context, formID uuid.UUID) (*domain.Form, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByID", ctx, formID)
+	ret0, _ := ret[0].(*domain.Form)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByID indicates an expected call of FindByID.
+func (mr *FormRepositoryMockRecorder) FindByID(ctx, formID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*FormRepository)(nil).FindByID), ctx, formID)
 }
 
 // Save mocks base method.

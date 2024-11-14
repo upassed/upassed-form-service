@@ -23,6 +23,7 @@ type formServiceImpl struct {
 type formRepository interface {
 	ExistsByNameAndTeacherUsername(ctx context.Context, formName, teacherUsername string) (bool, error)
 	Save(ctx context.Context, form *domain.Form) error
+	FindByID(ctx context.Context, formID uuid.UUID) (*domain.Form, error)
 }
 
 func New(cfg *config.Config, log *slog.Logger, formRepository formRepository) Service {

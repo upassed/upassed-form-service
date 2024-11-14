@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/golang/mock/gomock"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/upassed/upassed-form-service/internal/config"
@@ -157,4 +158,63 @@ func TestCreate_HappyPath(t *testing.T) {
 	require.NoError(t, err)
 
 	require.NotNil(t, response.CreatedFormID)
+}
+
+func TestFindByID_RepositoryError(t *testing.T) {
+	teacherUsername := gofakeit.Username()
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+
+	formID := uuid.New()
+	expectedRepositoryError := errors.New("some repo error")
+
+	repository.EXPECT().
+		FindByID(gomock.Any(), formID).
+		Return(nil, expectedRepositoryError)
+
+	_, err := service.FindByID(ctx, formID)
+	require.Error(t, err)
+
+	convertedError := status.Convert(err)
+	assert.Equal(t, expectedRepositoryError.Error(), convertedError.Message())
+	assert.Equal(t, codes.Internal, convertedError.Code())
+}
+
+func TestFindByID_ErrorDeadlineExceeded(t *testing.T) {
+	oldTimeout := cfg.Timeouts.EndpointExecutionTimeoutMS
+	cfg.Timeouts.EndpointExecutionTimeoutMS = "0"
+
+	teacherUsername := gofakeit.Username()
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+
+	formID := uuid.New()
+
+	repository.EXPECT().
+		FindByID(gomock.Any(), formID).
+		Return(util.RandomDomainForm(), nil)
+
+	_, err := service.FindByID(ctx, formID)
+	require.Error(t, err)
+
+	convertedError := status.Convert(err)
+	assert.Equal(t, formSvc.ErrFindFormByIDDeadlineExceeded.Error(), convertedError.Message())
+	assert.Equal(t, codes.DeadlineExceeded, convertedError.Code())
+
+	cfg.Timeouts.EndpointExecutionTimeoutMS = oldTimeout
+}
+
+func TestFindByID_HappyPath(t *testing.T) {
+	teacherUsername := gofakeit.Username()
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+
+	formID := uuid.New()
+	foundForm := util.RandomDomainForm()
+
+	repository.EXPECT().
+		FindByID(gomock.Any(), formID).
+		Return(foundForm, nil)
+
+	response, err := service.FindByID(ctx, formID)
+	require.NoError(t, err)
+
+	require.Equal(t, foundForm.ID, response.ID)
 }
