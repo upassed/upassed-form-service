@@ -13,7 +13,7 @@ import (
 
 var grpcAuthenticationRules = map[string]tokenAuthFunc{}
 
-func (wrapper *ClientWrapper) AuthenticationUnaryServerInterceptor() func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
+func (wrapper *clientImpl) AuthenticationUnaryServerInterceptor() func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
 	return func(ctx context.Context, request any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (response any, err error) {
 		log := logging.Wrap(
 			wrapper.log,
@@ -32,7 +32,7 @@ func (wrapper *ClientWrapper) AuthenticationUnaryServerInterceptor() func(ctx co
 			return nil, handling.Wrap(errors.New("unable to extract metadata"), handling.WithCode(codes.Internal))
 		}
 
-		token, ok := md[authenticationHeaderKey]
+		token, ok := md[AuthenticationHeaderKey]
 		if !ok || len(token) != 1 {
 			log.Error("missing authentication header in request metadata")
 			return nil, handling.Wrap(errors.New("unable to extract authentication header with jwt token"), handling.WithCode(codes.Unauthenticated))

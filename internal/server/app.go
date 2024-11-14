@@ -9,6 +9,7 @@ import (
 	loggingMiddleware "github.com/upassed/upassed-form-service/internal/middleware/grpc/logging"
 	"github.com/upassed/upassed-form-service/internal/middleware/grpc/recovery"
 	"github.com/upassed/upassed-form-service/internal/middleware/grpc/request_id"
+	"github.com/upassed/upassed-form-service/internal/server/form"
 	formSvc "github.com/upassed/upassed-form-service/internal/service/form"
 	"google.golang.org/grpc"
 	"log/slog"
@@ -30,23 +31,20 @@ type AppServerCreateParams struct {
 	Config      *config.Config
 	Log         *slog.Logger
 	FormService formSvc.Service
+	AuthClient  auth.Client
 }
 
 func New(params AppServerCreateParams) (*AppServer, error) {
-	authenticationClient, err := auth.NewClient(params.Config, params.Log)
-	if err != nil {
-		return nil, err
-	}
-
 	server := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
 			requestid.MiddlewareInterceptor(),
 			recovery.MiddlewareInterceptor(params.Log),
 			loggingMiddleware.MiddlewareInterceptor(params.Log),
-			authenticationClient.AuthenticationUnaryServerInterceptor(),
+			params.AuthClient.AuthenticationUnaryServerInterceptor(),
 		),
 	)
 
+	form.Register(server, params.Config, params.FormService)
 	return &AppServer{
 		config: params.Config,
 		log:    params.Log,

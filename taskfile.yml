@@ -5,6 +5,7 @@ tasks:
         desc: "Generate .go files from .proto files"
         cmds:
             - rm -rf ./pkg/client/*
+            - protoc -I ./api ./api/form.proto --go_out=./pkg/client --validate_out="lang=go,paths=source_relative:./pkg/client" --go_opt=paths=source_relative --go-grpc_out=./pkg/client --go-grpc_opt=paths=source_relative
     run-local:
         desc: "Run service on a local machine"
         cmds:
@@ -14,3 +15,10 @@ tasks:
         cmds:
             - go clean -testcache
             - gotestsum --format-hide-empty-pkg --format-icons hivis -- -coverprofile=cover.out ./...
+    mockgen:
+        desc: "Generate all mocks"
+        cmds:
+            - rm -rf internal/util/mocks/*
+            - mockgen -source=internal/repository/form/repository.go -destination=internal/util/mocks/mock_form_repository.go -package mocks -mock_names Repository=FormRepository Repository
+            - mockgen -source=internal/service/form/service.go -destination=internal/util/mocks/mock_form_service.go -package mocks -mock_names Service=FormService Service
+            - mockgen -source=internal/middleware/common/auth/auth.go -destination=internal/util/mocks/mock_auth_client_middleware.go -package mocks -mock_names Client=AuthClientMW Client

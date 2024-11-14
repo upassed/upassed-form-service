@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package api;
+
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "upassed.form.v1;client";
+
+service Form {
+  rpc FindByID(FormFindByIDRequest) returns (FormFindByIDResponse);
+}
+
+message FormFindByIDRequest {
+  string form_id = 1 [(validate.rules).string.uuid = true];
+}
+
+message FormFindByIDResponse {
+  FormDTO form = 1;
+}
+
+message FormDTO {
+  string id = 1;
+  string name = 2;
+  string teacher_username = 3;
+  string description = 4;
+  google.protobuf.Timestamp testing_begin_date = 5;
+  google.protobuf.Timestamp testing_end_date = 6;
+  google.protobuf.Timestamp created_at = 7;
+  repeated QuestionDTO questions = 8;
+}
+
+message QuestionDTO {
+  string id = 1;
+  string text = 2;
+  repeated AnswerDTO answers = 3;
+}
+
+message AnswerDTO {
+  string id = 1;
+  string text = 2;
+  bool is_correct = 3;
+}

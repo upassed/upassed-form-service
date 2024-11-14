@@ -17,7 +17,7 @@ func ConvertToFormCreateRequest(messageBody []byte) (*event.FormCreateRequest, e
 	return &request, nil
 }
 
-func ConvertToBusinessForm(request *event.FormCreateRequest) *business.Form {
+func ConvertToBusinessForm(request *event.FormCreateRequest, teacherUsername string) *business.Form {
 	questions := make([]*business.Question, 0, len(request.Questions))
 	for _, question := range request.Questions {
 		questions = append(questions, convertToQuestion(question))
@@ -26,6 +26,7 @@ func ConvertToBusinessForm(request *event.FormCreateRequest) *business.Form {
 	return &business.Form{
 		ID:               uuid.New(),
 		Name:             request.Name,
+		TeacherUsername:  teacherUsername,
 		Questions:        questions,
 		Description:      request.Description,
 		TestingBeginDate: request.TestingBeginDate,

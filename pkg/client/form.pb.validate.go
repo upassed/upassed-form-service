@@ -314,6 +314,133 @@ func (m *FormDTO) validate(all bool) error {
 
 	// no validation rules for Id
 
+	// no validation rules for Name
+
+	// no validation rules for TeacherUsername
+
+	// no validation rules for Description
+
+	if all {
+		switch v := interface{}(m.GetTestingBeginDate()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, FormDTOValidationError{
+					field:  "TestingBeginDate",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, FormDTOValidationError{
+					field:  "TestingBeginDate",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetTestingBeginDate()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return FormDTOValidationError{
+				field:  "TestingBeginDate",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetTestingEndDate()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, FormDTOValidationError{
+					field:  "TestingEndDate",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, FormDTOValidationError{
+					field:  "TestingEndDate",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetTestingEndDate()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return FormDTOValidationError{
+				field:  "TestingEndDate",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetCreatedAt()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, FormDTOValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, FormDTOValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCreatedAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return FormDTOValidationError{
+				field:  "CreatedAt",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	for idx, item := range m.GetQuestions() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, FormDTOValidationError{
+						field:  fmt.Sprintf("Questions[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, FormDTOValidationError{
+						field:  fmt.Sprintf("Questions[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return FormDTOValidationError{
+					field:  fmt.Sprintf("Questions[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
 	if len(errors) > 0 {
 		return FormDTOMultiError(errors)
 	}
@@ -390,3 +517,245 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = FormDTOValidationError{}
+
+// Validate checks the field values on QuestionDTO with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *QuestionDTO) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on QuestionDTO with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in QuestionDTOMultiError, or
+// nil if none found.
+func (m *QuestionDTO) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *QuestionDTO) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	// no validation rules for Text
+
+	for idx, item := range m.GetAnswers() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, QuestionDTOValidationError{
+						field:  fmt.Sprintf("Answers[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, QuestionDTOValidationError{
+						field:  fmt.Sprintf("Answers[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return QuestionDTOValidationError{
+					field:  fmt.Sprintf("Answers[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return QuestionDTOMultiError(errors)
+	}
+
+	return nil
+}
+
+// QuestionDTOMultiError is an error wrapping multiple validation errors
+// returned by QuestionDTO.ValidateAll() if the designated constraints aren't met.
+type QuestionDTOMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m QuestionDTOMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m QuestionDTOMultiError) AllErrors() []error { return m }
+
+// QuestionDTOValidationError is the validation error returned by
+// QuestionDTO.Validate if the designated constraints aren't met.
+type QuestionDTOValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e QuestionDTOValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e QuestionDTOValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e QuestionDTOValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e QuestionDTOValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e QuestionDTOValidationError) ErrorName() string { return "QuestionDTOValidationError" }
+
+// Error satisfies the builtin error interface
+func (e QuestionDTOValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sQuestionDTO.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = QuestionDTOValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = QuestionDTOValidationError{}
+
+// Validate checks the field values on AnswerDTO with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *AnswerDTO) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on AnswerDTO with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in AnswerDTOMultiError, or nil
+// if none found.
+func (m *AnswerDTO) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *AnswerDTO) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	// no validation rules for Text
+
+	// no validation rules for IsCorrect
+
+	if len(errors) > 0 {
+		return AnswerDTOMultiError(errors)
+	}
+
+	return nil
+}
+
+// AnswerDTOMultiError is an error wrapping multiple validation errors returned
+// by AnswerDTO.ValidateAll() if the designated constraints aren't met.
+type AnswerDTOMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AnswerDTOMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AnswerDTOMultiError) AllErrors() []error { return m }
+
+// AnswerDTOValidationError is the validation error returned by
+// AnswerDTO.Validate if the designated constraints aren't met.
+type AnswerDTOValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AnswerDTOValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AnswerDTOValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AnswerDTOValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AnswerDTOValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AnswerDTOValidationError) ErrorName() string { return "AnswerDTOValidationError" }
+
+// Error satisfies the builtin error interface
+func (e AnswerDTOValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAnswerDTO.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AnswerDTOValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AnswerDTOValidationError{}

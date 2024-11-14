@@ -8,11 +8,12 @@ import (
 type Form struct {
 	ID               uuid.UUID
 	Name             string
-	Questions        []*Question
+	TeacherUsername  string
 	Description      string
 	TestingBeginDate time.Time
 	TestingEndDate   time.Time
 	CreatedAt        time.Time
+	Questions        []*Question
 }
 
 type Question struct {

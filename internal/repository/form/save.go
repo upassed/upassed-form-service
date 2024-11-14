@@ -34,13 +34,7 @@ func (repository *formRepositoryImpl) Save(ctx context.Context, form *domain.For
 	)
 
 	log.Info("started saving form to a database")
-	form.TeacherUsername = teacherUsername
-
 	saveResult := repository.db.WithContext(ctx).Create(form)
-
-	var form2 domain.Form
-	repository.db.WithContext(ctx).First(&form2)
-
 	if err := saveResult.Error; err != nil || saveResult.RowsAffected != 1 {
 		log.Error("error while saving form data to a database", logging.Error(err))
 		tracing.SetSpanError(span, err)

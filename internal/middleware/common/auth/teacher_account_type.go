@@ -10,7 +10,7 @@ import (
 	"log/slog"
 )
 
-func (wrapper *ClientWrapper) TeacherAccountTypeAuthenticationFunc(ctx context.Context, token string) (context.Context, error) {
+func (wrapper *clientImpl) TeacherAccountTypeAuthenticationFunc(ctx context.Context, token string) (context.Context, error) {
 	log := logging.Wrap(
 		wrapper.log,
 		logging.WithOp(wrapper.TeacherAccountTypeAuthenticationFunc),
@@ -18,10 +18,10 @@ func (wrapper *ClientWrapper) TeacherAccountTypeAuthenticationFunc(ctx context.C
 	)
 
 	timeout := wrapper.cfg.GetEndpointExecutionTimeout()
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	callCtx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	response, err := wrapper.authenticationServiceClient.Validate(ctx, &client.TokenValidateRequest{
+	response, err := wrapper.authenticationServiceClient.Validate(callCtx, &client.TokenValidateRequest{
 		AccessToken: token,
 	})
 
