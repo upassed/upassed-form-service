@@ -36,7 +36,7 @@ func (repository *formRepositoryImpl) ExistsByNameAndTeacherUsername(ctx context
 	var formCount int64
 	countResult := repository.db.WithContext(ctx).Model(&domain.Form{}).Where("name = ?", formName).Where("teacher_username = ?", teacherUsername).Count(&formCount)
 	if err := countResult.Error; err != nil {
-		log.Error("error while counting forms with name and teacherUsername in database")
+		log.Error("error while counting forms with name and teacherUsername in database", logging.Error(err))
 		tracing.SetSpanError(span, err)
 		return false, handling.New(errCountingDuplicateForms.Error(), codes.Internal)
 	}
