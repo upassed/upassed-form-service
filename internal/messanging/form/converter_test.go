@@ -2,6 +2,7 @@ package form_test
 
 import (
 	"encoding/json"
+	"github.com/brianvoe/gofakeit/v7"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/upassed/upassed-form-service/internal/messanging/form"
@@ -35,11 +36,13 @@ func TestConvertToFormCreateRequest_ValidBytes(t *testing.T) {
 
 func TestConvertToBusinessForm(t *testing.T) {
 	eventForm := util.RandomEventFormCreateRequest()
-	businessForm := form.ConvertToBusinessForm(eventForm)
+	teacherUsername := gofakeit.Username()
+	businessForm := form.ConvertToBusinessForm(eventForm, teacherUsername)
 
 	assert.NotNil(t, businessForm.ID)
 	assert.NotNil(t, businessForm.Name)
 	assert.Equal(t, len(eventForm.Questions), len(businessForm.Questions))
+	assert.Equal(t, teacherUsername, businessForm.TeacherUsername)
 	for idx, question := range businessForm.Questions {
 		assert.NotNil(t, question.ID)
 		assertQuestionsEqual(t, eventForm.Questions[idx], businessForm.Questions[idx])

@@ -2,6 +2,7 @@ package form
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/upassed/upassed-form-service/internal/config"
 	domain "github.com/upassed/upassed-form-service/internal/repository/model"
 	business "github.com/upassed/upassed-form-service/internal/service/model"
@@ -10,6 +11,7 @@ import (
 
 type Service interface {
 	Create(ctx context.Context, form *business.Form) (*business.FormCreateResponse, error)
+	FindByID(ctx context.Context, formID uuid.UUID) (*business.Form, error)
 }
 
 type formServiceImpl struct {

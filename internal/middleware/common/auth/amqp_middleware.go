@@ -12,7 +12,7 @@ import (
 
 var amqpAuthenticationRules = map[string]tokenAuthFunc{}
 
-func (wrapper *ClientWrapper) AmqpMiddleware(config *config.Config, log *slog.Logger) amqp.Middleware {
+func (wrapper *clientImpl) AmqpMiddleware(config *config.Config, log *slog.Logger) amqp.Middleware {
 	amqpAuthenticationRules[config.Rabbit.Queues.FormCreate.Name] = wrapper.TeacherAccountTypeAuthenticationFunc
 
 	return func(ctx context.Context, next messanging.HandlerWithContext) messanging.HandlerWithContext {
@@ -29,7 +29,7 @@ func (wrapper *ClientWrapper) AmqpMiddleware(config *config.Config, log *slog.Lo
 				authenticationFunc = wrapper.AnyAccountTypeAuthenticationFunc
 			}
 
-			token, ok := d.Headers[authenticationHeaderKey]
+			token, ok := d.Headers[AuthenticationHeaderKey]
 			if !ok {
 				log.Error("authentication header is not passed, discarding the message")
 				return rabbitmq.NackDiscard

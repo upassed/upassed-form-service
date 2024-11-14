@@ -44,6 +44,7 @@ func New(config *config.Config, log *slog.Logger) (*App, error) {
 		Config:      config,
 		Log:         log,
 		FormService: formService,
+		AuthClient:  authClient,
 	})
 
 	if err != nil {

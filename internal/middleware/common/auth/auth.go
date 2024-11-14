@@ -6,6 +6,7 @@ import (
 	"github.com/upassed/upassed-authentication-service/pkg/client"
 	"github.com/upassed/upassed-form-service/internal/config"
 	"github.com/upassed/upassed-form-service/internal/logging"
+	"github.com/upassed/upassed-form-service/internal/middleware/amqp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log/slog"
@@ -17,19 +18,27 @@ var (
 )
 
 const (
-	authenticationHeaderKey = "authentication"
+	AuthenticationHeaderKey = "authentication"
 	UsernameKey             = "username"
 )
 
 type tokenAuthFunc func(ctx context.Context, token string) (context.Context, error)
 
-type ClientWrapper struct {
+type Client interface {
+	AmqpMiddleware(*config.Config, *slog.Logger) amqp.Middleware
+	AuthenticationUnaryServerInterceptor() func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error)
+	AnyAccountTypeAuthenticationFunc(ctx context.Context, token string) (context.Context, error)
+	StudentAccountTypeAuthenticationFunc(ctx context.Context, token string) (context.Context, error)
+	TeacherAccountTypeAuthenticationFunc(ctx context.Context, token string) (context.Context, error)
+}
+
+type clientImpl struct {
 	cfg                         *config.Config
 	log                         *slog.Logger
 	authenticationServiceClient client.TokenClient
 }
 
-func NewClient(cfg *config.Config, log *slog.Logger) (*ClientWrapper, error) {
+func NewClient(cfg *config.Config, log *slog.Logger) (Client, error) {
 	authenticationServiceUrl := net.JoinHostPort(
 		cfg.Services.Authentication.Host,
 		cfg.Services.Authentication.Port,
@@ -47,7 +56,7 @@ func NewClient(cfg *config.Config, log *slog.Logger) (*ClientWrapper, error) {
 		return nil, errCreatingAuthServiceConn
 	}
 
-	return &ClientWrapper{
+	return &clientImpl{
 		cfg:                         cfg,
 		log:                         log,
 		authenticationServiceClient: client.NewTokenClient(authenticationServiceConnection),

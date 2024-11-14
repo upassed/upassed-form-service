@@ -10,7 +10,7 @@ import (
 	"log/slog"
 )
 
-func (wrapper *ClientWrapper) AnyAccountTypeAuthenticationFunc(ctx context.Context, token string) (context.Context, error) {
+func (wrapper *clientImpl) AnyAccountTypeAuthenticationFunc(ctx context.Context, token string) (context.Context, error) {
 	log := logging.Wrap(
 		wrapper.log,
 		logging.WithOp(wrapper.AnyAccountTypeAuthenticationFunc),

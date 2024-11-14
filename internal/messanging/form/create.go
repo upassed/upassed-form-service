@@ -50,7 +50,7 @@ func (client *rabbitClient) CreateQueueConsumer() rabbitmq.Handler {
 		}
 
 		log.Info("creating form")
-		response, err := client.service.Create(spanContext, ConvertToBusinessForm(request))
+		response, err := client.service.Create(spanContext, ConvertToBusinessForm(request, teacherUsername))
 		if err != nil {
 			log.Error("unable to create form", logging.Error(err))
 			tracing.SetSpanError(span, err)

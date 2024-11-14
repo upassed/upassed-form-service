@@ -10,7 +10,7 @@ import (
 	"log/slog"
 )
 
-func (wrapper *ClientWrapper) TeacherAccountTypeAuthenticationFunc(ctx context.Context, token string) (context.Context, error) {
+func (wrapper *clientImpl) TeacherAccountTypeAuthenticationFunc(ctx context.Context, token string) (context.Context, error) {
 	log := logging.Wrap(
 		wrapper.log,
 		logging.WithOp(wrapper.TeacherAccountTypeAuthenticationFunc),

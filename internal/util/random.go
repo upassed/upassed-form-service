@@ -57,6 +57,7 @@ func RandomBusinessForm() *business.Form {
 	return &business.Form{
 		ID:               uuid.New(),
 		Name:             gofakeit.Slogan(),
+		TeacherUsername:  gofakeit.Username(),
 		Questions:        questions,
 		Description:      gofakeit.Slogan(),
 		TestingBeginDate: testingBeginDate,

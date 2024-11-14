@@ -10,14 +10,14 @@ import (
 )
 
 type rabbitClient struct {
-	authClient       *auth.ClientWrapper
+	authClient       auth.Client
 	service          form.Service
 	rabbitConnection *rabbitmq.Conn
 	cfg              *config.Config
 	log              *slog.Logger
 }
 
-func Initialize(authClient *auth.ClientWrapper, service form.Service, rabbitConnection *rabbitmq.Conn, cfg *config.Config, log *slog.Logger) {
+func Initialize(authClient auth.Client, service form.Service, rabbitConnection *rabbitmq.Conn, cfg *config.Config, log *slog.Logger) {
 	log = logging.Wrap(log,
 		logging.WithOp(Initialize),
 	)

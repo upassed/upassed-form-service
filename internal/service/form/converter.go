@@ -10,6 +10,7 @@ func ConvertToDomainForm(form *business.Form) *domain.Form {
 	return &domain.Form{
 		ID:               form.ID,
 		Name:             form.Name,
+		TeacherUsername:  form.TeacherUsername,
 		Questions:        convertToDomainQuestions(form.Questions, form.ID),
 		Description:      form.Description,
 		TestingBeginDate: form.TestingBeginDate,
