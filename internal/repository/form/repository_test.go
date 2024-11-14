@@ -3,6 +3,7 @@ package form_test
 import (
 	"context"
 	"github.com/brianvoe/gofakeit/v7"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/upassed/upassed-form-service/internal/config"
@@ -124,4 +125,26 @@ func TestExists_DuplicatesNotFound(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.False(t, result)
+}
+
+func TestFindByID_FormFound(t *testing.T) {
+	formToSave := util.RandomDomainForm()
+
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, formToSave.TeacherUsername)
+	err := studentRepository.Save(ctx, formToSave)
+	require.NoError(t, err)
+
+	result, err := studentRepository.FindByID(ctx, formToSave.ID)
+	require.NoError(t, err)
+
+	assert.Equal(t, formToSave.Name, result.Name)
+}
+
+func TestFindByID_FormNotFound(t *testing.T) {
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, gofakeit.Username())
+	_, err := studentRepository.FindByID(ctx, uuid.New())
+	require.Error(t, err)
+
+	convertedError := status.Convert(err)
+	assert.Equal(t, form.ErrFormNotFoundByID.Error(), convertedError.Message())
 }
