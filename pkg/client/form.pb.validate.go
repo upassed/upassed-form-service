@@ -291,6 +291,250 @@ var _ interface {
 	ErrorName() string
 } = FormFindByIDResponseValidationError{}
 
+// Validate checks the field values on FormFindByTeacherUsernameRequest with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the first error encountered is returned, or nil if there are
+// no violations.
+func (m *FormFindByTeacherUsernameRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on FormFindByTeacherUsernameRequest with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// FormFindByTeacherUsernameRequestMultiError, or nil if none found.
+func (m *FormFindByTeacherUsernameRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *FormFindByTeacherUsernameRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if len(errors) > 0 {
+		return FormFindByTeacherUsernameRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// FormFindByTeacherUsernameRequestMultiError is an error wrapping multiple
+// validation errors returned by
+// FormFindByTeacherUsernameRequest.ValidateAll() if the designated
+// constraints aren't met.
+type FormFindByTeacherUsernameRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m FormFindByTeacherUsernameRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m FormFindByTeacherUsernameRequestMultiError) AllErrors() []error { return m }
+
+// FormFindByTeacherUsernameRequestValidationError is the validation error
+// returned by FormFindByTeacherUsernameRequest.Validate if the designated
+// constraints aren't met.
+type FormFindByTeacherUsernameRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e FormFindByTeacherUsernameRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e FormFindByTeacherUsernameRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e FormFindByTeacherUsernameRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e FormFindByTeacherUsernameRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e FormFindByTeacherUsernameRequestValidationError) ErrorName() string {
+	return "FormFindByTeacherUsernameRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e FormFindByTeacherUsernameRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sFormFindByTeacherUsernameRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = FormFindByTeacherUsernameRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = FormFindByTeacherUsernameRequestValidationError{}
+
+// Validate checks the field values on FormFindByTeacherUsernameResponse with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the first error encountered is returned, or nil if there are
+// no violations.
+func (m *FormFindByTeacherUsernameResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on FormFindByTeacherUsernameResponse
+// with the rules defined in the proto definition for this message. If any
+// rules are violated, the result is a list of violation errors wrapped in
+// FormFindByTeacherUsernameResponseMultiError, or nil if none found.
+func (m *FormFindByTeacherUsernameResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *FormFindByTeacherUsernameResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetFoundForms() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, FormFindByTeacherUsernameResponseValidationError{
+						field:  fmt.Sprintf("FoundForms[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, FormFindByTeacherUsernameResponseValidationError{
+						field:  fmt.Sprintf("FoundForms[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return FormFindByTeacherUsernameResponseValidationError{
+					field:  fmt.Sprintf("FoundForms[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return FormFindByTeacherUsernameResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// FormFindByTeacherUsernameResponseMultiError is an error wrapping multiple
+// validation errors returned by
+// FormFindByTeacherUsernameResponse.ValidateAll() if the designated
+// constraints aren't met.
+type FormFindByTeacherUsernameResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m FormFindByTeacherUsernameResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m FormFindByTeacherUsernameResponseMultiError) AllErrors() []error { return m }
+
+// FormFindByTeacherUsernameResponseValidationError is the validation error
+// returned by FormFindByTeacherUsernameResponse.Validate if the designated
+// constraints aren't met.
+type FormFindByTeacherUsernameResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e FormFindByTeacherUsernameResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e FormFindByTeacherUsernameResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e FormFindByTeacherUsernameResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e FormFindByTeacherUsernameResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e FormFindByTeacherUsernameResponseValidationError) ErrorName() string {
+	return "FormFindByTeacherUsernameResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e FormFindByTeacherUsernameResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sFormFindByTeacherUsernameResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = FormFindByTeacherUsernameResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = FormFindByTeacherUsernameResponseValidationError{}
+
 // Validate checks the field values on FormDTO with the rules defined in the
 // proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.

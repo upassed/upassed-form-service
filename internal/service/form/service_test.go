@@ -11,6 +11,7 @@ import (
 	"github.com/upassed/upassed-form-service/internal/config"
 	"github.com/upassed/upassed-form-service/internal/logging"
 	"github.com/upassed/upassed-form-service/internal/middleware/common/auth"
+	domain "github.com/upassed/upassed-form-service/internal/repository/model"
 	formSvc "github.com/upassed/upassed-form-service/internal/service/form"
 	"github.com/upassed/upassed-form-service/internal/util"
 	"github.com/upassed/upassed-form-service/internal/util/mocks"
@@ -217,4 +218,61 @@ func TestFindByID_HappyPath(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Equal(t, foundForm.ID, response.ID)
+}
+
+func TestFindByTeacherUsername_RepositoryError(t *testing.T) {
+	teacherUsername := gofakeit.Username()
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+
+	expectedRepositoryError := errors.New("some repo error")
+
+	repository.EXPECT().
+		FindByTeacherUsername(gomock.Any(), teacherUsername).
+		Return(nil, expectedRepositoryError)
+
+	_, err := service.FindByTeacherUsername(ctx, teacherUsername)
+	require.Error(t, err)
+
+	convertedError := status.Convert(err)
+	assert.Equal(t, expectedRepositoryError.Error(), convertedError.Message())
+	assert.Equal(t, codes.Internal, convertedError.Code())
+}
+
+func TestFindByTeacherUsername_ErrorDeadlineExceeded(t *testing.T) {
+	oldTimeout := cfg.Timeouts.EndpointExecutionTimeoutMS
+	cfg.Timeouts.EndpointExecutionTimeoutMS = "0"
+
+	teacherUsername := gofakeit.Username()
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+
+	repository.EXPECT().
+		FindByTeacherUsername(gomock.Any(), teacherUsername).
+		Return([]*domain.Form{util.RandomDomainForm(), util.RandomDomainForm()}, nil)
+
+	_, err := service.FindByTeacherUsername(ctx, teacherUsername)
+	require.Error(t, err)
+
+	convertedError := status.Convert(err)
+	assert.Equal(t, formSvc.ErrFindFormsByTeacherUsernameDeadlineExceeded.Error(), convertedError.Message())
+	assert.Equal(t, codes.DeadlineExceeded, convertedError.Code())
+
+	cfg.Timeouts.EndpointExecutionTimeoutMS = oldTimeout
+}
+
+func TestFindByTeacherUsername_HappyPath(t *testing.T) {
+	teacherUsername := gofakeit.Username()
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+
+	foundForms := []*domain.Form{util.RandomDomainForm(), util.RandomDomainForm()}
+
+	repository.EXPECT().
+		FindByTeacherUsername(gomock.Any(), teacherUsername).
+		Return(foundForms, nil)
+
+	response, err := service.FindByTeacherUsername(ctx, teacherUsername)
+	require.NoError(t, err)
+
+	for idx, form := range foundForms {
+		assert.Equal(t, form.ID, response[idx].ID)
+	}
 }

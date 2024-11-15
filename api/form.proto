@@ -9,6 +9,7 @@ option go_package = "upassed.form.v1;client";
 
 service Form {
   rpc FindByID(FormFindByIDRequest) returns (FormFindByIDResponse);
+  rpc FindByTeacherUsername(FormFindByTeacherUsernameRequest) returns (FormFindByTeacherUsernameResponse);
 }
 
 message FormFindByIDRequest {
@@ -17,6 +18,13 @@ message FormFindByIDRequest {
 
 message FormFindByIDResponse {
   FormDTO form = 1;
+}
+
+message FormFindByTeacherUsernameRequest {
+}
+
+message FormFindByTeacherUsernameResponse {
+  repeated FormDTO found_forms = 1;
 }
 
 message FormDTO {

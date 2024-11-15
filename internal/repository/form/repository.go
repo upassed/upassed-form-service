@@ -13,6 +13,7 @@ type Repository interface {
 	ExistsByNameAndTeacherUsername(ctx context.Context, formName, teacherUsername string) (bool, error)
 	Save(ctx context.Context, form *domain.Form) error
 	FindByID(ctx context.Context, formID uuid.UUID) (*domain.Form, error)
+	FindByTeacherUsername(ctx context.Context, teacherUsername string) ([]*domain.Form, error)
 }
 
 type formRepositoryImpl struct {

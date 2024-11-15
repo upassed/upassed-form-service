@@ -8,16 +8,20 @@ import (
 
 func ConvertToFindByIdResponse(form *business.Form) *client.FormFindByIDResponse {
 	return &client.FormFindByIDResponse{
-		Form: &client.FormDTO{
-			Id:               form.ID.String(),
-			Name:             form.Name,
-			TeacherUsername:  form.TeacherUsername,
-			Description:      form.Description,
-			TestingBeginDate: timestamppb.New(form.TestingBeginDate),
-			TestingEndDate:   timestamppb.New(form.TestingEndDate),
-			CreatedAt:        timestamppb.New(form.CreatedAt),
-			Questions:        convertToClientQuestions(form.Questions),
-		},
+		Form: convertToClientForm(form),
+	}
+}
+
+func convertToClientForm(businessForm *business.Form) *client.FormDTO {
+	return &client.FormDTO{
+		Id:               businessForm.ID.String(),
+		Name:             businessForm.Name,
+		TeacherUsername:  businessForm.TeacherUsername,
+		Description:      businessForm.Description,
+		TestingBeginDate: timestamppb.New(businessForm.TestingBeginDate),
+		TestingEndDate:   timestamppb.New(businessForm.TestingEndDate),
+		CreatedAt:        timestamppb.New(businessForm.CreatedAt),
+		Questions:        convertToClientQuestions(businessForm.Questions),
 	}
 }
 
@@ -45,4 +49,15 @@ func convertToClientAnswers(answers []*business.Answer) []*client.AnswerDTO {
 	}
 
 	return clientAnswers
+}
+
+func ConvertToFindByTeacherUsernameResponse(businessForms []*business.Form) *client.FormFindByTeacherUsernameResponse {
+	clientForms := make([]*client.FormDTO, 0, len(businessForms))
+	for _, businessForm := range businessForms {
+		clientForms = append(clientForms, convertToClientForm(businessForm))
+	}
+
+	return &client.FormFindByTeacherUsernameResponse{
+		FoundForms: clientForms,
+	}
 }

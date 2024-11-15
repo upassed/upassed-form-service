@@ -18,17 +18,32 @@ func TestConvertToFindByIdResponse(t *testing.T) {
 	require.NotNil(t, response.GetForm())
 
 	convertedForm := response.GetForm()
-	assert.Equal(t, businessForm.ID.String(), convertedForm.GetId())
-	assert.Equal(t, businessForm.Name, convertedForm.GetName())
-	assert.Equal(t, businessForm.TeacherUsername, convertedForm.GetTeacherUsername())
-	assert.Equal(t, businessForm.Description, convertedForm.GetDescription())
-	assert.WithinDuration(t, businessForm.TestingBeginDate, convertedForm.GetTestingBeginDate().AsTime(), 1*time.Millisecond)
-	assert.WithinDuration(t, businessForm.TestingEndDate, convertedForm.GetTestingEndDate().AsTime(), 1*time.Millisecond)
-	assert.WithinDuration(t, businessForm.CreatedAt, convertedForm.GetCreatedAt().AsTime(), 1*time.Millisecond)
-	assert.Equal(t, len(businessForm.Questions), len(convertedForm.GetQuestions()))
+	assertFormEqual(t, businessForm, convertedForm)
+}
+
+func TestConvertToFindByTeacherUsernameResponse(t *testing.T) {
+	businessForms := []*business.Form{util.RandomBusinessForm(), util.RandomBusinessForm(), util.RandomBusinessForm()}
+	response := form.ConvertToFindByTeacherUsernameResponse(businessForms)
+
+	require.NotNil(t, response.GetFoundForms())
+
+	for idx, convertedForm := range response.GetFoundForms() {
+		assertFormEqual(t, businessForms[idx], convertedForm)
+	}
+}
+
+func assertFormEqual(t *testing.T, businessForm *business.Form, clientForm *client.FormDTO) {
+	assert.Equal(t, businessForm.ID.String(), clientForm.GetId())
+	assert.Equal(t, businessForm.Name, clientForm.GetName())
+	assert.Equal(t, businessForm.TeacherUsername, clientForm.GetTeacherUsername())
+	assert.Equal(t, businessForm.Description, clientForm.GetDescription())
+	assert.WithinDuration(t, businessForm.TestingBeginDate, clientForm.GetTestingBeginDate().AsTime(), 1*time.Millisecond)
+	assert.WithinDuration(t, businessForm.TestingEndDate, clientForm.GetTestingEndDate().AsTime(), 1*time.Millisecond)
+	assert.WithinDuration(t, businessForm.CreatedAt, clientForm.GetCreatedAt().AsTime(), 1*time.Millisecond)
+	assert.Equal(t, len(businessForm.Questions), len(clientForm.GetQuestions()))
 
 	for idx, question := range businessForm.Questions {
-		assertQuestionsEqual(t, question, convertedForm.GetQuestions()[idx])
+		assertQuestionsEqual(t, question, clientForm.GetQuestions()[idx])
 	}
 }
 

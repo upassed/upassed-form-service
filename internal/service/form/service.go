@@ -12,6 +12,7 @@ import (
 type Service interface {
 	Create(ctx context.Context, form *business.Form) (*business.FormCreateResponse, error)
 	FindByID(ctx context.Context, formID uuid.UUID) (*business.Form, error)
+	FindByTeacherUsername(ctx context.Context, teacherUsername string) ([]*business.Form, error)
 }
 
 type formServiceImpl struct {
@@ -24,6 +25,7 @@ type formRepository interface {
 	ExistsByNameAndTeacherUsername(ctx context.Context, formName, teacherUsername string) (bool, error)
 	Save(ctx context.Context, form *domain.Form) error
 	FindByID(ctx context.Context, formID uuid.UUID) (*domain.Form, error)
+	FindByTeacherUsername(ctx context.Context, teacherUsername string) ([]*domain.Form, error)
 }
 
 func New(cfg *config.Config, log *slog.Logger, formRepository formRepository) Service {

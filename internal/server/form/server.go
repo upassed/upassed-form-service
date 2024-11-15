@@ -17,6 +17,7 @@ type formServerAPI struct {
 
 type formService interface {
 	FindByID(ctx context.Context, formID uuid.UUID) (*business.Form, error)
+	FindByTeacherUsername(ctx context.Context, teacherUsername string) ([]*business.Form, error)
 }
 
 func Register(gRPC *grpc.Server, cfg *config.Config, service formService) {

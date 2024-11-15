@@ -11,6 +11,7 @@ import (
 	"github.com/upassed/upassed-form-service/internal/middleware/common/auth"
 	"github.com/upassed/upassed-form-service/internal/repository"
 	"github.com/upassed/upassed-form-service/internal/repository/form"
+	domain "github.com/upassed/upassed-form-service/internal/repository/model"
 	"github.com/upassed/upassed-form-service/internal/util"
 	"github.com/upassed/upassed-form-service/testcontainer"
 	"google.golang.org/grpc/codes"
@@ -147,4 +148,34 @@ func TestFindByID_FormNotFound(t *testing.T) {
 
 	convertedError := status.Convert(err)
 	assert.Equal(t, form.ErrFormNotFoundByID.Error(), convertedError.Message())
+}
+
+func TestFindByTeacherUsername_FormsFound(t *testing.T) {
+	teacherUsername := gofakeit.Username()
+	formsToSave := []*domain.Form{util.RandomDomainForm(), util.RandomDomainForm(), util.RandomDomainForm()}
+
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+	for _, formToSave := range formsToSave {
+		formToSave.TeacherUsername = teacherUsername
+		err := studentRepository.Save(ctx, formToSave)
+		require.NoError(t, err)
+	}
+
+	foundForms, err := studentRepository.FindByTeacherUsername(ctx, teacherUsername)
+	require.NoError(t, err)
+
+	assert.Equal(t, len(formsToSave), len(foundForms))
+
+	for idx, savedForm := range formsToSave {
+		assert.Equal(t, savedForm.ID, foundForms[idx].ID)
+	}
+}
+
+func TestFindByTeacherUsername_FormsNotFound(t *testing.T) {
+	teacherUsername := gofakeit.Username()
+	ctx := context.WithValue(context.Background(), auth.UsernameKey, teacherUsername)
+	foundForms, err := studentRepository.FindByTeacherUsername(ctx, teacherUsername)
+	require.NoError(t, err)
+
+	assert.Equal(t, 0, len(foundForms))
 }

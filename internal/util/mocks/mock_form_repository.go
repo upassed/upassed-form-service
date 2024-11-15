@@ -66,6 +66,21 @@ func (mr *FormRepositoryMockRecorder) FindByID(ctx, formID interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*FormRepository)(nil).FindByID), ctx, formID)
 }
 
+// FindByTeacherUsername mocks base method.
+func (m *FormRepository) FindByTeacherUsername(ctx context.Context, teacherUsername string) ([]*domain.Form, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByTeacherUsername", ctx, teacherUsername)
+	ret0, _ := ret[0].([]*domain.Form)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByTeacherUsername indicates an expected call of FindByTeacherUsername.
+func (mr *FormRepositoryMockRecorder) FindByTeacherUsername(ctx, teacherUsername interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByTeacherUsername", reflect.TypeOf((*FormRepository)(nil).FindByTeacherUsername), ctx, teacherUsername)
+}
+
 // Save mocks base method.
 func (m *FormRepository) Save(ctx context.Context, form *domain.Form) error {
 	m.ctrl.T.Helper()

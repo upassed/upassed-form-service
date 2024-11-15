@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Form_FindByID_FullMethodName = "/api.Form/FindByID"
+	Form_FindByID_FullMethodName              = "/api.Form/FindByID"
+	Form_FindByTeacherUsername_FullMethodName = "/api.Form/FindByTeacherUsername"
 )
 
 // FormClient is the client API for Form service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FormClient interface {
 	FindByID(ctx context.Context, in *FormFindByIDRequest, opts ...grpc.CallOption) (*FormFindByIDResponse, error)
+	FindByTeacherUsername(ctx context.Context, in *FormFindByTeacherUsernameRequest, opts ...grpc.CallOption) (*FormFindByTeacherUsernameResponse, error)
 }
 
 type formClient struct {
@@ -47,11 +49,22 @@ func (c *formClient) FindByID(ctx context.Context, in *FormFindByIDRequest, opts
 	return out, nil
 }
 
+func (c *formClient) FindByTeacherUsername(ctx context.Context, in *FormFindByTeacherUsernameRequest, opts ...grpc.CallOption) (*FormFindByTeacherUsernameResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(FormFindByTeacherUsernameResponse)
+	err := c.cc.Invoke(ctx, Form_FindByTeacherUsername_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FormServer is the server API for Form service.
 // All implementations must embed UnimplementedFormServer
 // for forward compatibility.
 type FormServer interface {
 	FindByID(context.Context, *FormFindByIDRequest) (*FormFindByIDResponse, error)
+	FindByTeacherUsername(context.Context, *FormFindByTeacherUsernameRequest) (*FormFindByTeacherUsernameResponse, error)
 	mustEmbedUnimplementedFormServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedFormServer struct{}
 
 func (UnimplementedFormServer) FindByID(context.Context, *FormFindByIDRequest) (*FormFindByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindByID not implemented")
+}
+func (UnimplementedFormServer) FindByTeacherUsername(context.Context, *FormFindByTeacherUsernameRequest) (*FormFindByTeacherUsernameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindByTeacherUsername not implemented")
 }
 func (UnimplementedFormServer) mustEmbedUnimplementedFormServer() {}
 func (UnimplementedFormServer) testEmbeddedByValue()              {}
@@ -104,6 +120,24 @@ func _Form_FindByID_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Form_FindByTeacherUsername_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FormFindByTeacherUsernameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FormServer).FindByTeacherUsername(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Form_FindByTeacherUsername_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FormServer).FindByTeacherUsername(ctx, req.(*FormFindByTeacherUsernameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Form_ServiceDesc is the grpc.ServiceDesc for Form service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var Form_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindByID",
 			Handler:    _Form_FindByID_Handler,
+		},
+		{
+			MethodName: "FindByTeacherUsername",
+			Handler:    _Form_FindByTeacherUsername_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

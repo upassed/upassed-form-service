@@ -11,7 +11,9 @@ import (
 	"github.com/upassed/upassed-form-service/internal/config"
 	"github.com/upassed/upassed-form-service/internal/handling"
 	"github.com/upassed/upassed-form-service/internal/logging"
+	"github.com/upassed/upassed-form-service/internal/middleware/common/auth"
 	"github.com/upassed/upassed-form-service/internal/server"
+	business "github.com/upassed/upassed-form-service/internal/service/model"
 	"github.com/upassed/upassed-form-service/internal/util"
 	"github.com/upassed/upassed-form-service/internal/util/mocks"
 	"github.com/upassed/upassed-form-service/pkg/client"
@@ -125,8 +127,38 @@ func TestFindByID_HappyPath(t *testing.T) {
 	assert.Equal(t, foundForm.ID.String(), response.GetForm().GetId())
 }
 
+func TestFindByTeacherUsername_ServiceError(t *testing.T) {
+	request := client.FormFindByTeacherUsernameRequest{}
+
+	expectedServiceError := handling.Wrap(errors.New("some service error"), handling.WithCode(codes.NotFound))
+	service.EXPECT().FindByTeacherUsername(gomock.Any(), gomock.Any()).Return(nil, expectedServiceError)
+
+	_, err := formClient.FindByTeacherUsername(context.Background(), &request)
+	require.Error(t, err)
+
+	convertedError := status.Convert(err)
+	assert.Equal(t, "some service error", convertedError.Message())
+	assert.Equal(t, codes.NotFound, convertedError.Code())
+}
+
+func TestFindByTeacherUsername_HappyPath(t *testing.T) {
+	request := client.FormFindByTeacherUsernameRequest{}
+
+	foundForms := []*business.Form{util.RandomBusinessForm(), util.RandomBusinessForm()}
+	service.EXPECT().FindByTeacherUsername(gomock.Any(), gomock.Any()).Return(foundForms, nil)
+
+	response, err := formClient.FindByTeacherUsername(context.Background(), &request)
+	require.NoError(t, err)
+
+	for idx, form := range foundForms {
+		assert.Equal(t, form.ID.String(), response.GetFoundForms()[idx].GetId())
+	}
+}
+
 func emptyAuthMiddleware() func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
-		return handler(ctx, req)
+		ctxWithUsername := context.WithValue(ctx, auth.UsernameKey, "teacherUsername")
+
+		return handler(ctxWithUsername, req)
 	}
 }

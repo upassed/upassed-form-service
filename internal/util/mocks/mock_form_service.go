@@ -67,6 +67,21 @@ func (mr *FormServiceMockRecorder) FindByID(ctx, formID interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*FormService)(nil).FindByID), ctx, formID)
 }
 
+// FindByTeacherUsername mocks base method.
+func (m *FormService) FindByTeacherUsername(ctx context.Context, teacherUsername string) ([]*business.Form, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByTeacherUsername", ctx, teacherUsername)
+	ret0, _ := ret[0].([]*business.Form)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByTeacherUsername indicates an expected call of FindByTeacherUsername.
+func (mr *FormServiceMockRecorder) FindByTeacherUsername(ctx, teacherUsername interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByTeacherUsername", reflect.TypeOf((*FormService)(nil).FindByTeacherUsername), ctx, teacherUsername)
+}
+
 // MockformRepository is a mock of formRepository interface.
 type MockformRepository struct {
 	ctrl     *gomock.Controller
@@ -118,6 +133,21 @@ func (m *MockformRepository) FindByID(ctx context.Context, formID uuid.UUID) (*d
 func (mr *MockformRepositoryMockRecorder) FindByID(ctx, formID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*MockformRepository)(nil).FindByID), ctx, formID)
+}
+
+// FindByTeacherUsername mocks base method.
+func (m *MockformRepository) FindByTeacherUsername(ctx context.Context, teacherUsername string) ([]*domain.Form, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByTeacherUsername", ctx, teacherUsername)
+	ret0, _ := ret[0].([]*domain.Form)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByTeacherUsername indicates an expected call of FindByTeacherUsername.
+func (mr *MockformRepositoryMockRecorder) FindByTeacherUsername(ctx, teacherUsername interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByTeacherUsername", reflect.TypeOf((*MockformRepository)(nil).FindByTeacherUsername), ctx, teacherUsername)
 }
 
 // Save mocks base method.

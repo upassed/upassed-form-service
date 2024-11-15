@@ -18,10 +18,10 @@ func (wrapper *clientImpl) StudentAccountTypeAuthenticationFunc(ctx context.Cont
 	)
 
 	timeout := wrapper.cfg.GetEndpointExecutionTimeout()
-	ctx, cancel := context.WithTimeout(ctx, timeout)
+	callCtx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	response, err := wrapper.authenticationServiceClient.Validate(ctx, &client.TokenValidateRequest{
+	response, err := wrapper.authenticationServiceClient.Validate(callCtx, &client.TokenValidateRequest{
 		AccessToken: token,
 	})
 

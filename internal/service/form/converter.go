@@ -60,6 +60,15 @@ func ConvertToBusinessForm(domainForm *domain.Form) *business.Form {
 	}
 }
 
+func ConvertToBusinessForms(domainForms []*domain.Form) []*business.Form {
+	businessForms := make([]*business.Form, 0, len(domainForms))
+	for _, domainForm := range domainForms {
+		businessForms = append(businessForms, ConvertToBusinessForm(domainForm))
+	}
+
+	return businessForms
+}
+
 func convertToBusinessQuestions(domainQuestions []*domain.Question) []*business.Question {
 	businessQuestions := make([]*business.Question, 0, len(domainQuestions))
 	for _, question := range domainQuestions {
