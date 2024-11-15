@@ -14,6 +14,8 @@ import (
 var grpcAuthenticationRules = map[string]tokenAuthFunc{}
 
 func (wrapper *clientImpl) AuthenticationUnaryServerInterceptor() func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
+	grpcAuthenticationRules["/api.Form/FindByTeacherUsername"] = wrapper.TeacherAccountTypeAuthenticationFunc
+
 	return func(ctx context.Context, request any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (response any, err error) {
 		log := logging.Wrap(
 			wrapper.log,
