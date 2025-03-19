@@ -4,6 +4,7 @@ create table if not exists form (
     description varchar,
     testing_begin_date timestamp not null,
     testing_end_date timestamp not null,
+    testing_duration_in_seconds int not null,
     created_at timestamp not null,
     teacher_username varchar not null
 );

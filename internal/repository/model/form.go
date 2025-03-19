@@ -6,14 +6,15 @@ import (
 )
 
 type Form struct {
-	ID               uuid.UUID
-	Name             string
-	TeacherUsername  string
-	Questions        []*Question `gorm:"foreignKey:FormID;references:ID"`
-	Description      string
-	TestingBeginDate time.Time
-	TestingEndDate   time.Time
-	CreatedAt        time.Time
+	ID                       uuid.UUID
+	Name                     string
+	TeacherUsername          string
+	Questions                []*Question `gorm:"foreignKey:FormID;references:ID"`
+	Description              string
+	TestingBeginDate         time.Time
+	TestingEndDate           time.Time
+	TestingDurationInSeconds int64
+	CreatedAt                time.Time
 }
 
 func (Form) TableName() string {

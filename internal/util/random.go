@@ -23,6 +23,7 @@ func RandomEventFormCreateRequest() *event.FormCreateRequest {
 		Description:      gofakeit.Slogan(),
 		TestingBeginDate: testingBeginDate,
 		TestingEndDate:   testingBeginDate.Add(10 * time.Hour),
+		TestingDuration:  90 * time.Minute,
 	}
 }
 
@@ -62,6 +63,7 @@ func RandomBusinessForm() *business.Form {
 		Description:      gofakeit.Slogan(),
 		TestingBeginDate: testingBeginDate,
 		TestingEndDate:   testingBeginDate.Add(10 * time.Hour),
+		TestingDuration:  90 * time.Minute,
 	}
 }
 
@@ -98,13 +100,14 @@ func RandomDomainForm() *domain.Form {
 
 	testingBeginDate := gofakeit.FutureDate()
 	return &domain.Form{
-		ID:               domainFormID,
-		Name:             gofakeit.Slogan(),
-		TeacherUsername:  gofakeit.Username(),
-		Questions:        questions,
-		Description:      gofakeit.Slogan(),
-		TestingBeginDate: testingBeginDate,
-		TestingEndDate:   testingBeginDate.Add(10 * time.Hour),
+		ID:                       domainFormID,
+		Name:                     gofakeit.Slogan(),
+		TeacherUsername:          gofakeit.Username(),
+		Questions:                questions,
+		Description:              gofakeit.Slogan(),
+		TestingBeginDate:         testingBeginDate,
+		TestingEndDate:           testingBeginDate.Add(10 * time.Hour),
+		TestingDurationInSeconds: int64((90 * time.Minute).Seconds()),
 	}
 }
 

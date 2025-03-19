@@ -31,6 +31,7 @@ func TestConvertToFormCreateRequest_ValidBytes(t *testing.T) {
 	assert.Equal(t, initialRequest.Description, convertedRequest.Description)
 	assert.WithinDuration(t, initialRequest.TestingBeginDate, convertedRequest.TestingBeginDate, 1*time.Millisecond)
 	assert.WithinDuration(t, initialRequest.TestingEndDate, convertedRequest.TestingEndDate, 1*time.Millisecond)
+	assert.Equal(t, initialRequest.TestingDuration, convertedRequest.TestingDuration)
 	assert.Equal(t, initialRequest.Questions, convertedRequest.Questions)
 }
 

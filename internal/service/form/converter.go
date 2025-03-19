@@ -4,18 +4,20 @@ import (
 	"github.com/google/uuid"
 	domain "github.com/upassed/upassed-form-service/internal/repository/model"
 	business "github.com/upassed/upassed-form-service/internal/service/model"
+	"time"
 )
 
 func ConvertToDomainForm(businessForm *business.Form) *domain.Form {
 	return &domain.Form{
-		ID:               businessForm.ID,
-		Name:             businessForm.Name,
-		TeacherUsername:  businessForm.TeacherUsername,
-		Questions:        convertToDomainQuestions(businessForm.Questions, businessForm.ID),
-		Description:      businessForm.Description,
-		TestingBeginDate: businessForm.TestingBeginDate,
-		TestingEndDate:   businessForm.TestingEndDate,
-		CreatedAt:        businessForm.CreatedAt,
+		ID:                       businessForm.ID,
+		Name:                     businessForm.Name,
+		TeacherUsername:          businessForm.TeacherUsername,
+		Questions:                convertToDomainQuestions(businessForm.Questions, businessForm.ID),
+		Description:              businessForm.Description,
+		TestingBeginDate:         businessForm.TestingBeginDate,
+		TestingDurationInSeconds: int64(businessForm.TestingDuration.Seconds()),
+		TestingEndDate:           businessForm.TestingEndDate,
+		CreatedAt:                businessForm.CreatedAt,
 	}
 }
 
@@ -56,6 +58,7 @@ func ConvertToBusinessForm(domainForm *domain.Form) *business.Form {
 		Description:      domainForm.Description,
 		TestingBeginDate: domainForm.TestingBeginDate,
 		TestingEndDate:   domainForm.TestingEndDate,
+		TestingDuration:  time.Duration(domainForm.TestingDurationInSeconds) * time.Second,
 		CreatedAt:        domainForm.CreatedAt,
 	}
 }

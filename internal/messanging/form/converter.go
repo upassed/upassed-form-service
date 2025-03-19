@@ -31,6 +31,7 @@ func ConvertToBusinessForm(request *event.FormCreateRequest, teacherUsername str
 		Description:      request.Description,
 		TestingBeginDate: request.TestingBeginDate,
 		TestingEndDate:   request.TestingEndDate,
+		TestingDuration:  request.TestingDuration,
 		CreatedAt:        time.Now(),
 	}
 }
