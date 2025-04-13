@@ -21,6 +21,7 @@ func TestConvertToDomainForm(t *testing.T) {
 	assert.WithinDuration(t, businessForm.TestingBeginDate, domainForm.TestingBeginDate, 1*time.Millisecond)
 	assert.WithinDuration(t, businessForm.TestingEndDate, domainForm.TestingEndDate, 1*time.Millisecond)
 	assert.WithinDuration(t, businessForm.CreatedAt, domainForm.CreatedAt, 1*time.Millisecond)
+	assert.Equal(t, int64(businessForm.TestingDuration.Seconds()), domainForm.TestingDurationInSeconds)
 	assert.Equal(t, len(businessForm.Questions), len(domainForm.Questions))
 
 	for idx, question := range businessForm.Questions {
@@ -41,6 +42,7 @@ func TestConvertToBusinessForm(t *testing.T) {
 	assert.WithinDuration(t, businessForm.TestingBeginDate, domainForm.TestingBeginDate, 1*time.Millisecond)
 	assert.WithinDuration(t, businessForm.TestingEndDate, domainForm.TestingEndDate, 1*time.Millisecond)
 	assert.WithinDuration(t, businessForm.CreatedAt, domainForm.CreatedAt, 1*time.Millisecond)
+	assert.Equal(t, int64(businessForm.TestingDuration.Seconds()), domainForm.TestingDurationInSeconds)
 	assert.Equal(t, len(businessForm.Questions), len(domainForm.Questions))
 
 	for idx, question := range businessForm.Questions {

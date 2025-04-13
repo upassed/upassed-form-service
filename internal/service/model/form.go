@@ -12,6 +12,7 @@ type Form struct {
 	Description      string
 	TestingBeginDate time.Time
 	TestingEndDate   time.Time
+	TestingDuration  time.Duration
 	CreatedAt        time.Time
 	Questions        []*Question
 }

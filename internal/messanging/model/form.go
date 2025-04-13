@@ -14,11 +14,12 @@ var (
 )
 
 type FormCreateRequest struct {
-	Name             string      `json:"name,omitempty" validate:"required,min=4,max=120"`
-	Questions        []*Question `json:"questions,omitempty" validate:"required,dive"`
-	Description      string      `json:"description,omitempty" validate:"max=500"`
-	TestingBeginDate time.Time   `json:"testing_begin_date,omitempty" validate:"required"`
-	TestingEndDate   time.Time   `json:"testing_end_date,omitempty" validate:"required"`
+	Name             string        `json:"name,omitempty" validate:"required,min=4,max=120"`
+	Questions        []*Question   `json:"questions,omitempty" validate:"required,dive"`
+	Description      string        `json:"description,omitempty" validate:"max=500"`
+	TestingBeginDate time.Time     `json:"testing_begin_date,omitempty" validate:"required"`
+	TestingEndDate   time.Time     `json:"testing_end_date,omitempty" validate:"required"`
+	TestingDuration  time.Duration `json:"testing_duration_nanos,omitempty" validate:"required"`
 }
 
 type Question struct {

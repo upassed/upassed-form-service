@@ -3,6 +3,7 @@ package form
 import (
 	business "github.com/upassed/upassed-form-service/internal/service/model"
 	"github.com/upassed/upassed-form-service/pkg/client"
+	"google.golang.org/protobuf/types/known/durationpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -20,6 +21,7 @@ func convertToClientForm(businessForm *business.Form) *client.FormDTO {
 		Description:      businessForm.Description,
 		TestingBeginDate: timestamppb.New(businessForm.TestingBeginDate),
 		TestingEndDate:   timestamppb.New(businessForm.TestingEndDate),
+		TestingDuration:  durationpb.New(businessForm.TestingDuration),
 		CreatedAt:        timestamppb.New(businessForm.CreatedAt),
 		Questions:        convertToClientQuestions(businessForm.Questions),
 	}

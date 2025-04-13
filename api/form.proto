@@ -4,6 +4,7 @@ package api;
 
 import "validate/validate.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
 
 option go_package = "upassed.form.v1;client";
 
@@ -34,8 +35,9 @@ message FormDTO {
   string description = 4;
   google.protobuf.Timestamp testing_begin_date = 5;
   google.protobuf.Timestamp testing_end_date = 6;
-  google.protobuf.Timestamp created_at = 7;
-  repeated QuestionDTO questions = 8;
+  google.protobuf.Duration testing_duration = 7;
+  google.protobuf.Timestamp created_at = 8;
+  repeated QuestionDTO questions = 9;
 }
 
 message QuestionDTO {
